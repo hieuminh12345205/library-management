@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quản lý sách – LibraryHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <h1>Quản lý sách</h1>
+    <form id="filter" class="toolbar">
+      <div class="field grow">
+        <label for="q">Tìm sách</label>
+        <input id="q" name="q" type="search" maxlength="100" placeholder="Tên sách, tác giả hoặc ISBN">
+      </div>
+      <div class="field">
+        <label for="category">Thể loại</label>
+        <select id="category" name="category"><option value="">Tất cả</option></select>
+      </div>
+      <button type="submit">Tìm</button>
+      <button type="button" class="btn-success" id="add-btn">+ Thêm sách</button>
+    </form>
+    <div id="alert" class="hidden"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ISBN</th><th>Tên sách</th><th>Tác giả</th><th>Thể loại</th>
+            <th class="num">Còn / Tổng</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div id="pagination" class="pagination"></div>
+  </main>
+
+  <dialog id="book-dialog">
+    <form id="book-form" novalidate>
+      <h2 style="margin-top:0" id="dialog-title">Thêm sách</h2>
+      <div class="form-row">
+        <div class="field">
+          <label for="isbn">ISBN</label>
+          <input id="isbn" name="isbn" maxlength="13" placeholder="13 chữ số">
+          <div class="field-error" data-for="isbn"></div>
+        </div>
+        <div class="field">
+          <label for="f-category">Thể loại</label>
+          <select id="f-category" name="category"><option value="">-- Chọn --</option></select>
+          <div class="field-error" data-for="category"></div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="title">Tên sách</label>
+        <input id="title" name="title" maxlength="200">
+        <div class="field-error" data-for="title"></div>
+      </div>
+      <div class="field">
+        <label for="author">Tác giả</label>
+        <input id="author" name="author" maxlength="100">
+        <div class="field-error" data-for="author"></div>
+      </div>
+      <div class="form-row">
+        <div class="field">
+          <label for="publisher">Nhà xuất bản</label>
+          <input id="publisher" name="publisher" maxlength="100">
+          <div class="field-error" data-for="publisher"></div>
+        </div>
+        <div class="field">
+          <label for="publishYear">Năm xuất bản</label>
+          <input id="publishYear" name="publishYear" type="number" min="1900">
+          <div class="field-error" data-for="publishYear"></div>
+        </div>
+        <div class="field">
+          <label for="totalCopies">Tổng số bản</label>
+          <input id="totalCopies" name="totalCopies" type="number" min="1" max="100">
+          <div class="field-error" data-for="totalCopies"></div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="coverUrl">URL ảnh bìa</label>
+        <input id="coverUrl" name="coverUrl" maxlength="500" placeholder="https://...">
+        <div class="field-error" data-for="coverUrl"></div>
+      </div>
+      <div class="field">
+        <label for="description">Mô tả</label>
+        <textarea id="description" name="description" rows="4" maxlength="2000"></textarea>
+        <div class="field-error" data-for="description"></div>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="btn-secondary" id="book-cancel">Huỷ</button>
+        <button type="submit">Lưu</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="/js/common.js"></script>
+  <script>
+    const user = App.requireRole('LIBRARIAN');
+    const rows = document.getElementById('rows');
+    const filter = document.getElementById('filter');
+    const alertBox = document.getElementById('alert');
+    const dialog = document.getElementById('book-dialog');
+    const bookForm = document.getElementById('book-form');
+    let page = 1;
+    let current = [];
+    let editingId = null;
+
+    async function loadCategories() {
+      const { data } = await App.api('/categories');
+      data.forEach((c) => {
+        filter.category.add(new Option(c, c));
+        bookForm.category.add(new Option(c, c));
+      });
+    }
+
+    function render(list) {
+      current = list;
+      if (!list.length) {
+        rows.innerHTML = '<tr><td colspan="6" class="empty">Không có sách phù hợp.</td></tr>';
+        return;
+      }
+      rows.innerHTML = list.map((b) => `
+        <tr>
+          <td>${App.escapeHtml(b.isbn)}</td>
+          <td><a href="/book.html?id=${b.id}">${App.escapeHtml(b.title)}</a></td>
+          <td>${App.escapeHtml(b.author)}</td>
+          <td>${App.escapeHtml(b.category)}</td>
+          <td class="num">${b.availableCopies} / ${b.totalCopies}</td>
+          <td class="actions">
+            <button class="btn-sm btn-secondary" data-edit="${b.id}">Sửa</button>
+            <button class="btn-sm btn-danger" data-delete="${b.id}">Xoá</button>
+          </td>
+        </tr>`).join('');
+    }
+
+    async function load() {
+      alertBox.classList.add('hidden');
+      try {
+        const { data, pagination } = await App.api('/books', {
+          query: { q: filter.q.value.trim(), category: filter.category.value, sort: 'newest', page, size: 20 },
+        });
+        render(data);
+        App.renderPagination(document.getElementById('pagination'), pagination, (p) => { page = p; load(); });
+      } catch (err) {
+        App.showAlert(alertBox, 'error', err.message);
+      }
+    }
+
+    async function openDialog(id) {
+      editingId = id;
+      bookForm.reset();
+      App.showFieldErrors(bookForm, {});
+      document.getElementById('dialog-title').textContent = id ? 'Sửa thông tin sách' : 'Thêm sách';
+      bookForm.publishYear.max = new Date().getFullYear();
+      if (id) {
+        const { data } = await App.api(`/books/${id}`);
+        ['isbn', 'title', 'author', 'category', 'publisher', 'publishYear', 'totalCopies', 'coverUrl', 'description']
+          .forEach((k) => { bookForm[k].value = data[k] ?? ''; });
+      }
+      dialog.showModal();
+    }
+
+    function formBody() {
+      const f = Object.fromEntries(new FormData(bookForm));
+      const toInt = (s) => (s === '' ? null : Number(s));
+      return {
+        isbn: f.isbn.trim(),
+        title: f.title,
+        author: f.author,
+        category: f.category,
+        publisher: f.publisher.trim() || null,
+        publishYear: toInt(f.publishYear),
+        totalCopies: f.totalCopies === '' ? undefined : Number(f.totalCopies),
+        coverUrl: f.coverUrl.trim() || null,
+        description: f.description || null,
+      };
+    }
+
+    bookForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = bookForm.querySelector('button[type="submit"]');
+      btn.disabled = true;
+      try {
+        const body = formBody();
+        if (editingId) {
+          await App.api(`/books/${editingId}`, { method: 'PUT', body });
+          App.toast('Đã cập nhật thông tin sách.');
+        } else {
+          await App.api('/books', { method: 'POST', body });
+          App.toast('Đã thêm sách mới.');
+        }
+        dialog.close();
+        load();
+      } catch (err) {
+        if (err.status === 400) App.showFieldErrors(bookForm, err.fields);
+        else if (err.code === 'ISBN_EXISTS') App.showFieldErrors(bookForm, { isbn: err.message });
+        else if (err.code === 'COPIES_IN_USE') App.showFieldErrors(bookForm, { totalCopies: err.message });
+        else { dialog.close(); App.toast(err.message, 'error'); }
+      }
+      btn.disabled = false;
+    });
+
+    rows.addEventListener('click', async (e) => {
+      const { edit, delete: del } = e.target.dataset;
+      if (edit) openDialog(Number(edit)).catch((err) => App.toast(err.message, 'error'));
+      if (del) {
+        const book = current.find((b) => b.id === Number(del));
+        if (!confirm(`Xoá sách "${book.title}"?`)) return;
+        try {
+          await App.api(`/books/${del}`, { method: 'DELETE' });
+          App.toast('Đã xoá sách.');
+          load();
+        } catch (err) {
+          App.toast(err.message, 'error');
+        }
+      }
+    });
+
+    document.getElementById('add-btn').addEventListener('click', () => openDialog(null));
+    document.getElementById('book-cancel').addEventListener('click', () => dialog.close());
+    filter.addEventListener('submit', (e) => { e.preventDefault(); page = 1; load(); });
+    filter.category.addEventListener('change', () => { page = 1; load(); });
+
+    if (user) loadCategories().catch(() => {}).finally(load);
+  </script>
+</body>
+</html>

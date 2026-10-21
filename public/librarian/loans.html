@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yêu cầu chờ duyệt – LibraryHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <h1>Phiếu mượn</h1>
+    <form id="filter" class="toolbar">
+      <div class="field grow">
+        <label for="q">Mã phiếu hoặc email độc giả</label>
+        <input id="q" name="q" type="search" maxlength="100" placeholder="VD: PM-20261001-0001">
+      </div>
+      <div class="field">
+        <label for="status">Trạng thái</label>
+        <select id="status" name="status">
+          <option value="">Tất cả</option>
+          <option value="BORROWING">Đang mượn</option>
+          <option value="OVERDUE">Quá hạn</option>
+          <option value="PENDING">Chờ duyệt</option>
+          <option value="RETURNED">Đã trả</option>
+          <option value="REJECTED">Bị từ chối</option>
+        </select>
+      </div>
+      <button type="submit">Tìm</button>
+    </form>
+    <div id="alert" class="hidden"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Mã phiếu</th><th>Độc giả</th><th>Sách</th><th>Ngày mượn</th><th>Hạn trả</th>
+            <th>Trạng thái</th><th class="num">Phí phạt</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div id="pagination" class="pagination"></div>
+  </main>
+
+  <dialog id="return-dialog">
+    <h2 style="margin-top:0">Xác nhận trả sách</h2>
+    <dl class="meta" id="return-info"></dl>
+    <div class="dialog-actions">
+      <button type="button" class="btn-secondary" id="return-cancel">Huỷ</button>
+      <button type="button" id="return-confirm">Xác nhận trả</button>
+    </div>
+  </dialog>
+
+  <script src="/js/common.js"></script>
+  <script>
+    const user = App.requireRole('LIBRARIAN');
+    const rows = document.getElementById('rows');
+    const filter = document.getElementById('filter');
+    const alertBox = document.getElementById('alert');
+    const dialog = document.getElementById('return-dialog');
+    let page = 1;
+    let current = [];
+    let returning = null;
+
+    const initialStatus = new URLSearchParams(location.search).get('status');
+    if (initialStatus) filter.status.value = initialStatus;
+
+    function fineCell(l) {
+      if (l.status === 'OVERDUE') return `${App.formatMoney(l.fine)}<br><span class="muted">trễ ${l.overdueDays} ngày</span>`;
+      if (l.status === 'RETURNED') return App.formatMoney(l.fine);
+      return '—';
+    }
+
+    function render(list) {
+      current = list;
+      if (!list.length) {
+        rows.innerHTML = '<tr><td colspan="8" class="empty">Không có phiếu mượn phù hợp.</td></tr>';
+        return;
+      }
+      rows.innerHTML = list.map((l) => `
+        <tr>
+          <td>${App.escapeHtml(l.code)}</td>
+          <td>${App.escapeHtml(l.reader.fullName)}<br><span class="muted">${App.escapeHtml(l.reader.email)}</span></td>
+          <td>${App.escapeHtml(l.book.title)}</td>
+          <td>${App.formatDate(l.approvedAt)}</td>
+          <td>${l.dueDate || '—'}</td>
+          <td>${App.statusBadge(l.status)}</td>
+          <td class="num">${fineCell(l)}</td>
+          <td class="actions">${['BORROWING', 'OVERDUE'].includes(l.status)
+            ? `<button class="btn-sm" data-return="${l.id}">Xác nhận trả</button>` : ''}</td>
+        </tr>`).join('');
+    }
+
+    async function load() {
+      alertBox.classList.add('hidden');
+      try {
+        const { data, pagination } = await App.api('/librarian/loans', {
+          query: { q: filter.q.value.trim(), status: filter.status.value, page, size: 20 },
+        });
+        render(data);
+        App.renderPagination(document.getElementById('pagination'), pagination, (p) => { page = p; load(); });
+      } catch (err) {
+        App.showAlert(alertBox, 'error', err.message);
+      }
+    }
+
+    rows.addEventListener('click', (e) => {
+      const id = Number(e.target.dataset.return);
+      if (!id) return;
+      returning = current.find((l) => l.id === id);
+      const late = returning.status === 'OVERDUE';
+      document.getElementById('return-info').innerHTML = `
+        <dt>Mã phiếu</dt><dd>${App.escapeHtml(returning.code)}</dd>
+        <dt>Độc giả</dt><dd>${App.escapeHtml(returning.reader.fullName)}</dd>
+        <dt>Sách</dt><dd>${App.escapeHtml(returning.book.title)}</dd>
+        <dt>Hạn trả</dt><dd>${App.formatDate(returning.dueDate)}</dd>
+        <dt>Số ngày trễ</dt><dd>${late ? returning.overdueDays : 0}</dd>
+        <dt>Phí phạt</dt><dd><strong>${App.formatMoney(late ? returning.fine : 0)}</strong></dd>`;
+      dialog.showModal();
+    });
+
+    document.getElementById('return-cancel').addEventListener('click', () => dialog.close());
+    document.getElementById('return-confirm').addEventListener('click', async (e) => {
+      e.target.disabled = true;
+      try {
+        const { data } = await App.api(`/librarian/loans/${returning.id}/return`, { method: 'POST' });
+        App.toast(`Đã xác nhận trả sách. Phí phạt: ${data.fine} đ.`);
+      } catch (err) {
+        App.toast(err.message, 'error');
+      }
+      e.target.disabled = false;
+      dialog.close();
+      load();
+    });
+
+    filter.addEventListener('submit', (e) => { e.preventDefault(); page = 1; load(); });
+    filter.status.addEventListener('change', () => { page = 1; load(); });
+    if (user) load();
+  </script>
+</body>
+</html>

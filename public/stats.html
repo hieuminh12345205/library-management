@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Thống kê – LibraryHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <h1>Thống kê</h1>
+    <div id="alert" class="hidden"></div>
+    <div id="summary" class="stat-grid"></div>
+
+    <h2>Sách được mượn nhiều nhất</h2>
+    <form id="range" class="toolbar">
+      <div class="field">
+        <label for="from">Từ ngày</label>
+        <input id="from" name="from" type="date">
+      </div>
+      <div class="field">
+        <label for="to">Đến ngày</label>
+        <input id="to" name="to" type="date">
+      </div>
+      <button type="submit">Xem</button>
+    </form>
+    <div id="range-alert" class="hidden"></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Tên sách</th><th>Tác giả</th><th>ISBN</th><th class="num">Lượt mượn</th></tr></thead>
+        <tbody id="top-rows"></tbody>
+      </table>
+    </div>
+
+    <h2>Phiếu đang quá hạn</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Mã phiếu</th><th>Độc giả</th><th>Sách</th><th>Hạn trả</th><th class="num">Số ngày trễ</th><th class="num">Phí tạm tính</th></tr>
+        </thead>
+        <tbody id="overdue-rows"></tbody>
+      </table>
+    </div>
+  </main>
+  <script src="/js/common.js"></script>
+  <script>
+    const user = App.requireRole('LIBRARIAN', 'ADMIN');
+    const alertBox = document.getElementById('alert');
+    const rangeForm = document.getElementById('range');
+    const S = App.STATUS_LABEL;
+
+    function stat(label, value) {
+      return `<div class="stat"><div class="value">${value}</div><div class="label">${label}</div></div>`;
+    }
+
+    async function loadSummary() {
+      const { data } = await App.api('/stats/summary');
+      const s = data.loansByStatus;
+      document.getElementById('summary').innerHTML = [
+        stat('Đầu sách', data.totalTitles),
+        stat('Tổng số bản', data.totalCopies),
+        stat('Bản còn trong kho', data.availableCopies),
+        stat('Độc giả', data.totalReaders),
+        stat(S.PENDING, s.PENDING),
+        stat(S.BORROWING, s.BORROWING),
+        stat(S.OVERDUE, s.OVERDUE),
+        stat(S.RETURNED, s.RETURNED),
+      ].join('');
+    }
+
+    async function loadTop() {
+      const rangeAlert = document.getElementById('range-alert');
+      rangeAlert.classList.add('hidden');
+      const body = document.getElementById('top-rows');
+      try {
+        const { data, range } = await App.api('/stats/top-books', {
+          query: { from: rangeForm.from.value, to: rangeForm.to.value },
+        });
+        rangeForm.from.value = range.from;
+        rangeForm.to.value = range.to;
+        body.innerHTML = data.length
+          ? data.map((b, i) => `<tr>
+              <td>${i + 1}</td>
+              <td><a href="/book.html?id=${b.id}">${App.escapeHtml(b.title)}</a></td>
+              <td>${App.escapeHtml(b.author)}</td>
+              <td>${App.escapeHtml(b.isbn)}</td>
+              <td class="num">${b.borrowCount}</td>
+            </tr>`).join('')
+          : '<tr><td colspan="5" class="empty">Không có lượt mượn trong khoảng thời gian này.</td></tr>';
+      } catch (err) {
+        App.showAlert(rangeAlert, 'error', err.message);
+      }
+    }
+
+    async function loadOverdue() {
+      const { data } = await App.api('/stats/overdue');
+      document.getElementById('overdue-rows').innerHTML = data.length
+        ? data.map((l) => `<tr>
+            <td>${App.escapeHtml(l.code)}</td>
+            <td>${App.escapeHtml(l.reader.fullName)}<br><span class="muted">${App.escapeHtml(l.reader.email)}</span></td>
+            <td>${App.escapeHtml(l.book.title)}</td>
+            <td>${App.formatDate(l.dueDate)}</td>
+            <td class="num">${l.overdueDays}</td>
+            <td class="num">${App.formatMoney(l.fine)}</td>
+          </tr>`).join('')
+        : '<tr><td colspan="6" class="empty">Không có phiếu quá hạn.</td></tr>';
+    }
+
+    rangeForm.addEventListener('submit', (e) => { e.preventDefault(); loadTop(); });
+
+    if (user) {
+      Promise.all([loadSummary(), loadTop(), loadOverdue()])
+        .catch((err) => App.showAlert(alertBox, 'error', err.message));
+    }
+  </script>
+</body>
+</html>

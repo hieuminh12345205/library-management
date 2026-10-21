@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lịch sử mượn – LibraryHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <h1>Lịch sử mượn sách</h1>
+    <div class="toolbar">
+      <div class="field">
+        <label for="status">Trạng thái</label>
+        <select id="status">
+          <option value="">Tất cả</option>
+          <option value="PENDING">Chờ duyệt</option>
+          <option value="BORROWING">Đang mượn</option>
+          <option value="OVERDUE">Quá hạn</option>
+          <option value="RETURNED">Đã trả</option>
+          <option value="REJECTED">Bị từ chối</option>
+        </select>
+      </div>
+    </div>
+    <div id="alert" class="hidden"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Mã phiếu</th><th>Sách</th><th>Ngày yêu cầu</th><th>Hạn trả</th>
+            <th>Trạng thái</th><th>Ngày trả</th><th class="num">Phí phạt</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div id="pagination" class="pagination"></div>
+  </main>
+  <script src="/js/common.js"></script>
+  <script>
+    const user = App.requireRole('READER');
+    const rows = document.getElementById('rows');
+    const statusSel = document.getElementById('status');
+    const alertBox = document.getElementById('alert');
+    let page = 1;
+
+    function fineCell(l) {
+      if (l.status === 'OVERDUE') {
+        return `${App.formatMoney(l.fine)}<br><span class="muted">(tạm tính, trễ ${l.overdueDays} ngày)</span>`;
+      }
+      if (l.status === 'RETURNED') return App.formatMoney(l.fine);
+      return '—';
+    }
+
+    function statusCell(l) {
+      let html = App.statusBadge(l.status);
+      if (l.status === 'REJECTED' && l.rejectReason) {
+        html += `<br><span class="muted">Lý do: ${App.escapeHtml(l.rejectReason)}</span>`;
+      }
+      return html;
+    }
+
+    function render(list) {
+      if (!list.length) {
+        rows.innerHTML = '<tr><td colspan="8" class="empty">Chưa có phiếu mượn nào.</td></tr>';
+        return;
+      }
+      rows.innerHTML = list.map((l) => `
+        <tr>
+          <td>${App.escapeHtml(l.code)}</td>
+          <td><a href="/book.html?id=${l.book.id}">${App.escapeHtml(l.book.title)}</a></td>
+          <td>${App.formatDate(l.requestedAt)}</td>
+          <td>${App.formatDate(l.dueDate)}${l.renewCount ? '<br><span class="muted">(đã gia hạn)</span>' : ''}</td>
+          <td>${statusCell(l)}</td>
+          <td>${App.formatDate(l.returnedAt)}</td>
+          <td class="num">${fineCell(l)}</td>
+          <td class="actions">${l.status === 'BORROWING' && l.renewCount === 0
+            ? `<button class="btn-sm btn-secondary" data-renew="${l.id}">Gia hạn</button>` : ''}</td>
+        </tr>`).join('');
+    }
+
+    async function load() {
+      alertBox.classList.add('hidden');
+      try {
+        const { data, pagination } = await App.api('/loans/me', { query: { status: statusSel.value, page, size: 10 } });
+        render(data);
+        App.renderPagination(document.getElementById('pagination'), pagination, (p) => { page = p; load(); });
+      } catch (err) {
+        App.showAlert(alertBox, 'error', err.message);
+      }
+    }
+
+    rows.addEventListener('click', async (e) => {
+      const id = e.target.dataset.renew;
+      if (!id || !confirm('Gia hạn phiếu mượn thêm 7 ngày?')) return;
+      e.target.disabled = true;
+      try {
+        const { data } = await App.api(`/loans/${id}/renew`, { method: 'POST' });
+        App.toast(`Gia hạn thành công. Hạn trả mới: ${App.formatDate(data.dueDate)}`);
+        load();
+      } catch (err) {
+        App.toast(err.message, 'error');
+        e.target.disabled = false;
+      }
+    });
+
+    statusSel.addEventListener('change', () => { page = 1; load(); });
+    if (user) load();
+  </script>
+</body>
+</html>

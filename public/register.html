@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Đăng ký – LibraryHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <div class="card form-narrow">
+      <h1>Đăng ký tài khoản độc giả</h1>
+      <div id="alert" class="hidden"></div>
+      <form id="register-form" novalidate>
+        <div class="field">
+          <label for="fullName">Họ và tên</label>
+          <input id="fullName" name="fullName" autocomplete="name" maxlength="50">
+          <div class="field-error" data-for="fullName"></div>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="email" maxlength="100">
+          <div class="field-error" data-for="email"></div>
+        </div>
+        <div class="field">
+          <label for="phone">Số điện thoại</label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel" maxlength="10" placeholder="0xxxxxxxxx">
+          <div class="field-error" data-for="phone"></div>
+        </div>
+        <div class="field">
+          <label for="password">Mật khẩu</label>
+          <input id="password" name="password" type="password" autocomplete="new-password">
+          <div class="muted" style="font-size:13px">8–32 ký tự, có chữ hoa, chữ thường và chữ số.</div>
+          <div class="field-error" data-for="password"></div>
+        </div>
+        <div class="field">
+          <label for="confirmPassword">Xác nhận mật khẩu</label>
+          <input id="confirmPassword" name="confirmPassword" type="password" autocomplete="new-password">
+          <div class="field-error" data-for="confirmPassword"></div>
+        </div>
+        <button type="submit" class="btn-block">Đăng ký</button>
+      </form>
+      <p class="muted">Đã có tài khoản? <a href="/login.html">Đăng nhập</a></p>
+    </div>
+  </main>
+  <script src="/js/common.js"></script>
+  <script>
+    const form = document.getElementById('register-form');
+    const alertBox = document.getElementById('alert');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alertBox.classList.add('hidden');
+      const btn = form.querySelector('button');
+      btn.disabled = true;
+      try {
+        await App.api('/auth/register', { method: 'POST', body: Object.fromEntries(new FormData(form)) });
+        location.replace('/login.html?registered=1');
+      } catch (err) {
+        if (err.code === 'EMAIL_EXISTS') App.showFieldErrors(form, { email: err.message });
+        else App.showFieldErrors(form, err.fields);
+        if (err.status !== 400 && err.status !== 409) App.showAlert(alertBox, 'error', err.message);
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

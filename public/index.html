@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tìm sách – LibraryHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <img class="hero" src="/img/banner.png" alt="Kệ sách thư viện">
+    <h1>Tìm kiếm sách</h1>
+    <form id="search-form" class="search-bar">
+      <div class="q">
+        <label for="q">Từ khoá</label>
+        <input id="q" name="q" type="search" maxlength="100" placeholder="Tên sách, tác giả hoặc ISBN">
+      </div>
+      <div>
+        <label for="category">Thể loại</label>
+        <select id="category" name="category"><option value="">Tất cả</option></select>
+      </div>
+      <div>
+        <label for="sort">Sắp xếp</label>
+        <select id="sort" name="sort">
+          <option value="newest">Mới nhất</option>
+          <option value="title">Tên sách A–Z</option>
+        </select>
+      </div>
+      <label class="check"><input type="checkbox" id="available" name="available"> Chỉ sách còn</label>
+      <button type="submit">Tìm</button>
+    </form>
+    <div id="alert" class="hidden"></div>
+    <p id="summary" class="muted"></p>
+    <div id="results" class="book-grid"></div>
+    <div id="pagination" class="pagination"></div>
+  </main>
+  <script src="/js/common.js"></script>
+  <script>
+    const form = document.getElementById('search-form');
+    const results = document.getElementById('results');
+    const summary = document.getElementById('summary');
+    const alertBox = document.getElementById('alert');
+    const params = new URLSearchParams(location.search);
+    let page = Number(params.get('page')) || 1;
+
+    // Khôi phục điều kiện tìm từ URL (quay lại từ trang chi tiết)
+    form.q.value = params.get('q') || '';
+    form.sort.value = params.get('sort') || 'newest';
+    form.available.checked = params.get('available') === 'true';
+
+    async function loadCategories() {
+      const { data } = await App.api('/categories');
+      data.forEach((c) => form.category.add(new Option(c, c)));
+      form.category.value = params.get('category') || '';
+    }
+
+    function card(b) {
+      const stock = b.availableCopies > 0
+        ? `<span class="badge badge-ok">Còn ${b.availableCopies}/${b.totalCopies}</span>`
+        : '<span class="badge badge-out">Hết sách</span>';
+      return `
+        <a class="book-card" href="/book.html?id=${b.id}">
+          <img class="cover" src="${App.coverSrc(b)}" alt="Bìa sách ${App.escapeHtml(b.title)}" loading="lazy"
+               data-title="${App.escapeHtml(b.title)}" data-category="${App.escapeHtml(b.category)}">
+          <div class="info">
+            <span class="title">${App.escapeHtml(b.title)}</span>
+            <span class="author">${App.escapeHtml(b.author)}</span>
+            <span class="stock">${stock}</span>
+          </div>
+        </a>`;
+    }
+
+    async function search() {
+      alertBox.classList.add('hidden');
+      const query = {
+        q: form.q.value.trim(),
+        category: form.category.value,
+        sort: form.sort.value,
+        available: form.available.checked ? 'true' : '',
+        page,
+        size: 12,
+      };
+      const url = new URLSearchParams();
+      Object.entries(query).forEach(([k, v]) => { if (v && k !== 'size') url.set(k, v); });
+      history.replaceState(null, '', `?${url}`);
+
+      try {
+        const { data, pagination } = await App.api('/books', { query });
+        summary.textContent = `Tìm thấy ${pagination.totalItems} đầu sách`;
+        results.innerHTML = data.length
+          ? data.map(card).join('')
+          : '<p class="empty" style="grid-column:1/-1">Không tìm thấy sách phù hơp.</p>';
+        // Ảnh bìa lỗi → dùng bìa mặc định
+        results.querySelectorAll('img.cover').forEach((img) => {
+          img.addEventListener('error', () => {
+            img.src = App.defaultCover({ title: img.dataset.title, category: img.dataset.category });
+          }, { once: true });
+        });
+        App.renderPagination(document.getElementById('pagination'), pagination, (p) => {
+          page = p;
+          search();
+          window.scrollTo(0, 0);
+        });
+      } catch (err) {
+        results.innerHTML = '';
+        summary.textContent = '';
+        App.showAlert(alertBox, 'error', err.message);
+      }
+    }
+
+    form.addEventListener('submit', (e) => { e.preventDefault(); page = 1; search(); });
+    ['category', 'sort', 'available'].forEach((name) => {
+      form[name].addEventListener('change', search);
+    });
+
+    loadCategories().catch(() => {}).finally(search);
+  </script>
+</body>
+</html>

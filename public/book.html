@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Chi tiết sách – LibraryHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <p><a href="/" id="back-link">← Quay lại danh sách</a></p>
+    <div id="alert" class="hidden"></div>
+    <div id="book" class="card hidden"></div>
+  </main>
+  <script src="/js/common.js"></script>
+  <script>
+    const alertBox = document.getElementById('alert');
+    const box = document.getElementById('book');
+    const id = new URLSearchParams(location.search).get('id');
+
+    // Giữ điều kiện tìm kiếm khi quay lại
+    try {
+      const ref = new URL(document.referrer);
+      if (ref.origin === location.origin && (ref.pathname === '/' || ref.pathname === '/index.html')) {
+        document.getElementById('back-link').href = ref.pathname + ref.search;
+      }
+    } catch { /* không có referrer */ }
+
+    function row(label, value) {
+      return `<dt>${label}</dt><dd>${value}</dd>`;
+    }
+
+    function actionHtml(b) {
+      const user = App.getUser();
+      if (!user) {
+        const next = encodeURIComponent(location.pathname + location.search);
+        return `<a class="btn" href="/login.html?next=${next}">Đăng nhập để mượn</a>`;
+      }
+      if (user.role === 'READER') {
+        return `<button id="borrow-btn" ${b.availableCopies > 0 ? '' : 'disabled'}>Gửi yêu cầu mượn</button>`;
+      }
+      return '<p class="muted">Chỉ độc giả mới gửi được yêu cầu mượn.</p>';
+    }
+
+    function render(b) {
+      document.title = `${b.title} – LibraryHub`;
+      const stock = b.availableCopies > 0
+        ? `<span class="badge badge-ok">Còn ${b.availableCopies}/${b.totalCopies} bản</span>`
+        : `<span class="badge badge-out">Hết sách (0/${b.totalCopies})</span>`;
+      box.innerHTML = `<div class="book-detail">
+        <img class="cover" id="cover" src="${App.coverSrc(b)}" alt="Bìa sách ${App.escapeHtml(b.title)}">
+        <div>
+          <h1>${App.escapeHtml(b.title)}</h1>
+          <p class="muted">${App.escapeHtml(b.author)}</p>
+          <p>${stock}</p>
+          <dl class="meta">
+            ${row('ISBN', App.escapeHtml(b.isbn))}
+            ${row('Thể loại', App.escapeHtml(b.category))}
+            ${row('Nhà xuất bản', App.escapeHtml(b.publisher || '—'))}
+            ${row('Năm xuất bản', b.publishYear || '—')}
+          </dl>
+          <div id="borrow-alert" class="hidden"></div>
+          ${actionHtml(b)}
+          <h2>Mô tả</h2>
+          <p class="description">${App.escapeHtml(b.description || 'Chưa có mô tả.')}</p>
+        </div>
+      </div>`;
+      box.classList.remove('hidden');
+      document.getElementById('cover').addEventListener('error', (e) => {
+        e.target.src = App.defaultCover(b);
+      }, { once: true });
+
+      const btn = document.getElementById('borrow-btn');
+      if (btn) btn.addEventListener('click', () => borrow(b, btn));
+    }
+
+    async function borrow(b, btn) {
+      const borrowAlert = document.getElementById('borrow-alert');
+      btn.disabled = true;
+      try {
+        const { data } = await App.api('/loans', { method: 'POST', body: { bookId: b.id } });
+        App.showAlert(borrowAlert, 'success', `Gửi yêu cầu mượn thành công. Vui lòng chờ thủ thư duyệt. Mã phiếu: ${data.code}.`);
+      } catch (err) {
+        App.showAlert(borrowAlert, 'error', err.message);
+        btn.disabled = false;
+      }
+    }
+
+    async function load() {
+      try {
+        const { data } = await App.api(`/books/${encodeURIComponent(id || '0')}`);
+        render(data);
+      } catch (err) {
+        App.showAlert(alertBox, 'error', err.status === 404 ? 'Không tìm thấy sách.' : err.message);
+      }
+    }
+    load();
+  </script>
+</body>
+</html>

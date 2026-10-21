@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Yêu cầu chờ duyệt – LibraryHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <h1>Yêu cầu mượn chờ duyệt</h1>
+    <p class="muted">Yêu cầu gửi trước hiển thị trước.</p>
+    <div id="alert" class="hidden"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Mã phiếu</th><th>Độc giả</th><th>Sách</th><th class="num">Còn trong kho</th>
+            <th>Thời điểm yêu cầu</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div id="pagination" class="pagination"></div>
+  </main>
+
+  <dialog id="reject-dialog">
+    <form id="reject-form" method="dialog" novalidate>
+      <h2 style="margin-top:0">Từ chối yêu cầu <span id="reject-code"></span></h2>
+      <div class="field">
+        <label for="reason">Lý do từ chối</label>
+        <textarea id="reason" name="reason" rows="3" maxlength="200"></textarea>
+        <div class="field-error" data-for="reason"></div>
+      </div>
+      <div class="dialog-actions">
+        <button type="button" class="btn-secondary" id="reject-cancel">Huỷ</button>
+        <button type="submit" class="btn-danger">Từ chối</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script src="/js/common.js"></script>
+  <script>
+    const user = App.requireRole('LIBRARIAN');
+    const rows = document.getElementById('rows');
+    const alertBox = document.getElementById('alert');
+    const dialog = document.getElementById('reject-dialog');
+    const rejectForm = document.getElementById('reject-form');
+    let page = 1;
+    let rejectId = null;
+
+    function render(list) {
+      if (!list.length) {
+        rows.innerHTML = '<tr><td colspan="6" class="empty">Không có yêu cầu nào đang chờ duyệt.</td></tr>';
+        return;
+      }
+      rows.innerHTML = list.map((l) => `
+        <tr>
+          <td>${App.escapeHtml(l.code)}</td>
+          <td>${App.escapeHtml(l.reader.fullName)}<br><span class="muted">${App.escapeHtml(l.reader.email)}</span></td>
+          <td>${App.escapeHtml(l.book.title)}<br><span class="muted">${App.escapeHtml(l.book.isbn)}</span></td>
+          <td class="num">${l.book.availableCopies}</td>
+          <td>${App.formatDateTime(l.requestedAt)}</td>
+          <td class="actions">
+            <button class="btn-sm btn-success" data-approve="${l.id}" ${l.book.availableCopies > 0 ? '' : 'disabled title="Sách đã hết"'}>Duyệt</button>
+            <button class="btn-sm btn-danger" data-reject="${l.id}" data-code="${App.escapeHtml(l.code)}">Từ chối</button>
+          </td>
+        </tr>`).join('');
+    }
+
+    async function load() {
+      alertBox.classList.add('hidden');
+      try {
+        const { data, pagination } = await App.api('/librarian/loans', { query: { status: 'PENDING', page, size: 20 } });
+        render(data);
+        App.renderPagination(document.getElementById('pagination'), pagination, (p) => { page = p; load(); });
+      } catch (err) {
+        App.showAlert(alertBox, 'error', err.message);
+      }
+    }
+
+    rows.addEventListener('click', async (e) => {
+      const { approve, reject, code } = e.target.dataset;
+      if (approve) {
+        e.target.disabled = true;
+        try {
+          const { data } = await App.api(`/librarian/loans/${approve}/approve`, { method: 'POST' });
+          App.toast(`Đã duyệt phiếu ${data.code}. Hạn trả: ${App.formatDate(data.dueDate)}`);
+        } catch (err) {
+          App.toast(err.message, 'error');
+        }
+        load();
+      }
+      if (reject) {
+        rejectId = reject;
+        document.getElementById('reject-code').textContent = code;
+        rejectForm.reset();
+        App.showFieldErrors(rejectForm, {});
+        dialog.showModal();
+      }
+    });
+
+    document.getElementById('reject-cancel').addEventListener('click', () => dialog.close());
+
+    rejectForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      try {
+        const { data } = await App.api(`/librarian/loans/${rejectId}/reject`, {
+          method: 'POST',
+          body: { reason: rejectForm.reason.value },
+        });
+        dialog.close();
+        App.toast(`Đã từ chối phiếu ${data.code}.`);
+        load();
+      } catch (err) {
+        if (err.status === 400) {
+          App.showFieldErrors(rejectForm, err.fields);
+        } else {
+          dialog.close();
+          App.toast(err.message, 'error');
+          load();
+        }
+      }
+    });
+
+    if (user) load();
+  </script>
+</body>
+</html>

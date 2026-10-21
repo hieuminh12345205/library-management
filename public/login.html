@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Đăng nhập – LibraryHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <div class="card form-narrow">
+      <h1>Đăng nhập</h1>
+      <div id="alert" class="hidden"></div>
+      <form id="login-form" novalidate>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" autocomplete="username">
+          <div class="field-error" data-for="email"></div>
+        </div>
+        <div class="field">
+          <label for="password">Mật khẩu</label>
+          <input id="password" name="password" type="password" autocomplete="current-password">
+          <div class="field-error" data-for="password"></div>
+        </div>
+        <button type="submit" class="btn-block">Đăng nhập</button>
+      </form>
+      <p class="muted">Chưa có tài khoản? <a href="/register.html">Đăng ký</a></p>
+    </div>
+  </main>
+  <script src="/js/common.js"></script>
+  <script>
+    const form = document.getElementById('login-form');
+    const alertBox = document.getElementById('alert');
+    const params = new URLSearchParams(location.search);
+    const next = params.get('next');
+
+    const current = App.getUser();
+    if (App.getToken() && current) location.replace(App.HOME_BY_ROLE[current.role]);
+
+    const reason = params.get('reason');
+    if (reason === 'expired') App.showAlert(alertBox, 'info', 'Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại.');
+    if (reason === 'locked') App.showAlert(alertBox, 'error', 'Tài khoản đã bị khoá. Vui lòng liên hệ thư viện.');
+    if (params.get('registered')) App.showAlert(alertBox, 'success', 'Đăng ký thành công. Vui lòng đăng nhập.');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      alertBox.classList.add('hidden');
+      App.showFieldErrors(form, {});
+      const btn = form.querySelector('button');
+      btn.disabled = true;
+      try {
+        const { data } = await App.api('/auth/login', {
+          method: 'POST',
+          body: { email: form.email.value, password: form.password.value },
+        });
+        App.setSession(data.token, data.user);
+        // Chỉ chuyển tới đường dẫn nội bộ
+        const safe = next && next.startsWith('/') && !next.startsWith('//');
+        location.replace(safe ? next : App.HOME_BY_ROLE[data.user.role]);
+      } catch (err) {
+        App.showFieldErrors(form, err.fields);
+        if (err.status !== 400) App.showAlert(alertBox, 'error', err.message);
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

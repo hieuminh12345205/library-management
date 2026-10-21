@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quản lý tài khoản – LibraryHub</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <h1>Quản lý tài khoản</h1>
+    <form id="filter" class="toolbar">
+      <div class="field grow">
+        <label for="q">Họ tên hoặc email</label>
+        <input id="q" name="q" type="search" maxlength="100">
+      </div>
+      <div class="field">
+        <label for="role">Vai trò</label>
+        <select id="role" name="role">
+          <option value="">Tất cả</option>
+          <option value="READER">Độc giả</option>
+          <option value="LIBRARIAN">Thủ thư</option>
+          <option value="ADMIN">Quản trị viên</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="status">Trạng thái</label>
+        <select id="status" name="status">
+          <option value="">Tất cả</option>
+          <option value="ACTIVE">Hoạt động</option>
+          <option value="LOCKED">Bị khoá</option>
+        </select>
+      </div>
+      <button type="submit">Tìm</button>
+    </form>
+    <div id="alert" class="hidden"></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th><th>Họ tên</th><th>Email</th><th>Số điện thoại</th><th>Vai trò</th>
+            <th>Trạng thái</th><th>Ngày tạo</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <div id="pagination" class="pagination"></div>
+  </main>
+  <script src="/js/common.js"></script>
+  <script>
+    const user = App.requireRole('ADMIN');
+    const rows = document.getElementById('rows');
+    const filter = document.getElementById('filter');
+    const alertBox = document.getElementById('alert');
+    const STATUS_TEXT = { ACTIVE: 'Hoạt động', LOCKED: 'Bị khoá' };
+    let page = 1;
+
+    function roleSelect(u) {
+      const options = Object.entries(App.ROLE_LABEL)
+        .map(([value, text]) => `<option value="${value}" ${u.role === value ? 'selected' : ''}>${text}</option>`)
+        .join('');
+      return `<select class="btn-sm" data-role="${u.id}" data-current="${u.role}" ${u.id === user.id ? 'disabled' : ''}>${options}</select>`;
+    }
+
+    function render(list) {
+      if (!list.length) {
+        rows.innerHTML = '<tr><td colspan="8" class="empty">Không có tài khoản phù hợp.</td></tr>';
+        return;
+      }
+      rows.innerHTML = list.map((u) => `
+        <tr>
+          <td>${u.id}</td>
+          <td>${App.escapeHtml(u.fullName)}${u.id === user.id ? ' <span class="muted">(bạn)</span>' : ''}</td>
+          <td>${App.escapeHtml(u.email)}</td>
+          <td>${App.escapeHtml(u.phone || '—')}</td>
+          <td>${roleSelect(u)}</td>
+          <td><span class="badge badge-${u.status}">${STATUS_TEXT[u.status]}</span></td>
+          <td>${App.formatDate(u.createdAt)}</td>
+          <td class="actions">${u.id === user.id ? '' : (u.status === 'ACTIVE'
+            ? `<button class="btn-sm btn-danger" data-status="LOCKED" data-id="${u.id}">Khoá</button>`
+            : `<button class="btn-sm btn-success" data-status="ACTIVE" data-id="${u.id}">Mở khoá</button>`)}</td>
+        </tr>`).join('');
+    }
+
+    async function load() {
+      alertBox.classList.add('hidden');
+      try {
+        const { data, pagination } = await App.api('/admin/users', {
+          query: { q: filter.q.value.trim(), role: filter.role.value, status: filter.status.value, page, size: 20 },
+        });
+        render(data);
+        App.renderPagination(document.getElementById('pagination'), pagination, (p) => { page = p; load(); });
+      } catch (err) {
+        App.showAlert(alertBox, 'error', err.message);
+      }
+    }
+
+    rows.addEventListener('click', async (e) => {
+      const { status, id } = e.target.dataset;
+      if (!status) return;
+      const verb = status === 'LOCKED' ? 'Khoá' : 'Mở khoá';
+      if (!confirm(`${verb} tài khoản này?`)) return;
+      try {
+        await App.api(`/admin/users/${id}/status`, { method: 'PATCH', body: { status } });
+        App.toast(`${verb} tài khoản thành công.`);
+      } catch (err) {
+        App.toast(err.message, 'error');
+      }
+      load();
+    });
+
+    rows.addEventListener('change', async (e) => {
+      const id = e.target.dataset.role;
+      if (!id) return;
+      const role = e.target.value;
+      if (!confirm(`Đổi vai trò thành "${App.ROLE_LABEL[role]}"?`)) {
+        e.target.value = e.target.dataset.current;
+        return;
+      }
+      try {
+        await App.api(`/admin/users/${id}/role`, { method: 'PATCH', body: { role } });
+        App.toast('Đổi vai trò thành công.');
+      } catch (err) {
+        App.toast(err.message, 'error');
+      }
+      load();
+    });
+
+    filter.addEventListener('submit', (e) => { e.preventDefault(); page = 1; load(); });
+    filter.role.addEventListener('change', () => { page = 1; load(); });
+    filter.status.addEventListener('change', () => { page = 1; load(); });
+    if (user) load();
+  </script>
+</body>
+</html>
