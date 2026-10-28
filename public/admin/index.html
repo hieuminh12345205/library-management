@@ -10,30 +10,6 @@
   <header id="site-header"></header>
   <main>
     <h1>Quản lý tài khoản</h1>
-    <form id="filter" class="toolbar">
-      <div class="field grow">
-        <label for="q">Họ tên hoặc email</label>
-        <input id="q" name="q" type="search" maxlength="100">
-      </div>
-      <div class="field">
-        <label for="role">Vai trò</label>
-        <select id="role" name="role">
-          <option value="">Tất cả</option>
-          <option value="READER">Độc giả</option>
-          <option value="LIBRARIAN">Thủ thư</option>
-          <option value="ADMIN">Quản trị viên</option>
-        </select>
-      </div>
-      <div class="field">
-        <label for="status">Trạng thái</label>
-        <select id="status" name="status">
-          <option value="">Tất cả</option>
-          <option value="ACTIVE">Hoạt động</option>
-          <option value="LOCKED">Bị khoá</option>
-        </select>
-      </div>
-      <button type="submit">Tìm</button>
-    </form>
     <div id="alert" class="hidden"></div>
     <div class="table-wrap">
       <table>
@@ -52,21 +28,13 @@
   <script>
     const user = App.requireRole('ADMIN');
     const rows = document.getElementById('rows');
-    const filter = document.getElementById('filter');
     const alertBox = document.getElementById('alert');
     const STATUS_TEXT = { ACTIVE: 'Hoạt động', LOCKED: 'Bị khoá' };
     let page = 1;
 
-    function roleSelect(u) {
-      const options = Object.entries(App.ROLE_LABEL)
-        .map(([value, text]) => `<option value="${value}" ${u.role === value ? 'selected' : ''}>${text}</option>`)
-        .join('');
-      return `<select class="btn-sm" data-role="${u.id}" data-current="${u.role}" ${u.id === user.id ? 'disabled' : ''}>${options}</select>`;
-    }
-
     function render(list) {
       if (!list.length) {
-        rows.innerHTML = '<tr><td colspan="8" class="empty">Không có tài khoản phù hợp.</td></tr>';
+        rows.innerHTML = '<tr><td colspan="8" class="empty">Chưa có tài khoản.</td></tr>';
         return;
       }
       rows.innerHTML = list.map((u) => `
@@ -75,7 +43,7 @@
           <td>${App.escapeHtml(u.fullName)}${u.id === user.id ? ' <span class="muted">(bạn)</span>' : ''}</td>
           <td>${App.escapeHtml(u.email)}</td>
           <td>${App.escapeHtml(u.phone || '—')}</td>
-          <td>${roleSelect(u)}</td>
+          <td>${App.ROLE_LABEL[u.role]}</td>
           <td><span class="badge badge-${u.status}">${STATUS_TEXT[u.status]}</span></td>
           <td>${App.formatDate(u.createdAt)}</td>
           <td class="actions">${u.id === user.id ? '' : (u.status === 'ACTIVE'
@@ -88,7 +56,7 @@
       alertBox.classList.add('hidden');
       try {
         const { data, pagination } = await App.api('/admin/users', {
-          query: { q: filter.q.value.trim(), role: filter.role.value, status: filter.status.value, page, size: 20 },
+          query: { page, size: 20 },
         });
         render(data);
         App.renderPagination(document.getElementById('pagination'), pagination, (p) => { page = p; load(); });
@@ -111,26 +79,6 @@
       load();
     });
 
-    rows.addEventListener('change', async (e) => {
-      const id = e.target.dataset.role;
-      if (!id) return;
-      const role = e.target.value;
-      if (!confirm(`Đổi vai trò thành "${App.ROLE_LABEL[role]}"?`)) {
-        e.target.value = e.target.dataset.current;
-        return;
-      }
-      try {
-        await App.api(`/admin/users/${id}/role`, { method: 'PATCH', body: { role } });
-        App.toast('Đổi vai trò thành công.');
-      } catch (err) {
-        App.toast(err.message, 'error');
-      }
-      load();
-    });
-
-    filter.addEventListener('submit', (e) => { e.preventDefault(); page = 1; load(); });
-    filter.role.addEventListener('change', () => { page = 1; load(); });
-    filter.status.addEventListener('change', () => { page = 1; load(); });
     if (user) load();
   </script>
 </body>

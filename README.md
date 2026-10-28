@@ -7,10 +7,10 @@ Bài tập lớn môn **Đánh giá hiệu năng hệ thống** – Trường Đ
 
 ## Hồ sơ bàn giao
 
-Bộ tài liệu v2.0 cập nhật ngày 28/10/2026:
+Bộ tài liệu v2.1 cập nhật ngày 28/10/2026:
 
 - [URD bản Word](docs/URD.docx) và [SRS bản Word](docs/SRS.docx).
-- [Tài liệu API](docs/Mau_01_Tai_lieu_API.docx): 25 endpoint, request/response mẫu và tài khoản thử.
+- [Tài liệu API](docs/Mau_01_Tai_lieu_API.docx): 22 endpoint, request/response mẫu và tài khoản thử.
 - [Hướng dẫn vận hành](docs/Huong_dan_van_hanh.docx) · [Bản Markdown](docs/Huong_dan_van_hanh.md).
 - [Biên bản bàn giao số 1](docs/Mau_06_Bien_ban_ban_giao.docx).
 - [Trạng thái hồ sơ và thông tin cần bổ sung](docs/TRANG_THAI_HO_SO.md).
@@ -51,15 +51,11 @@ Mật khẩu chung: `Test@123`
 
 | Email | Vai trò | Ghi chú |
 |---|---|---|
-| admin01@library.test, admin02@library.test | Quản trị viên | |
-| librarian01@library.test, librarian02@library.test | Thủ thư | |
+| admin01@library.test | Quản trị viên | |
+| librarian01@library.test | Thủ thư | |
 | reader01@library.test | Độc giả | Có phiếu ở đủ các trạng thái |
 | reader02@library.test | Độc giả | Đã đạt giới hạn 5 phiếu |
-| reader03@library.test | Độc giả | Có phiếu quá hạn |
-| reader04@library.test | Độc giả | Chưa có phiếu nào |
-| reader05@library.test | Độc giả | Quá hạn ~60 ngày (phí phạt chạm trần) |
-| reader06@library.test | Độc giả | Đang giữ bản duy nhất của một đầu sách |
-| reader07 – reader12@library.test | Độc giả | Dữ liệu bổ sung |
+| reader03@library.test | Độc giả | Có phiếu quá hạn (một phiếu quá hạn ~60 ngày); đang giữ bản duy nhất của một đầu sách |
 | locked01@library.test | Độc giả | Tài khoản bị khoá |
 
 ## Các trang
@@ -73,8 +69,8 @@ Mật khẩu chung: `Test@123`
 | `/librarian/` | Thủ thư | Duyệt / từ chối yêu cầu |
 | `/librarian/loans.html` | Thủ thư | Tra cứu phiếu, xác nhận trả |
 | `/librarian/books.html` | Thủ thư | Thêm / sửa / xoá sách |
-| `/admin/` | Quản trị viên | Khoá / mở khoá, đổi vai trò tài khoản |
-| `/stats.html` | Thủ thư, Quản trị viên | Thống kê |
+| `/admin/` | Quản trị viên | Danh sách tài khoản, khoá / mở khoá |
+| `/stats.html` | Thủ thư, Quản trị viên | Thống kê tổng quan |
 
 ## Cấu trúc thư mục
 

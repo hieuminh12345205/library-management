@@ -21,21 +21,10 @@ const pick = (arr) => arr[randInt(0, arr.length - 1)];
 const USERS = [
   ['Quản Trị Viên', 'admin01@library.test', '0901000001', 'ADMIN', 'ACTIVE'],
   ['Trần Thị Thu', 'librarian01@library.test', '0902000001', 'LIBRARIAN', 'ACTIVE'],
-  ['Lê Văn Hùng', 'librarian02@library.test', '0902000002', 'LIBRARIAN', 'ACTIVE'],
   ['Nguyễn Văn An', 'reader01@library.test', '0903000001', 'READER', 'ACTIVE'],
   ['Phạm Thị Bình', 'reader02@library.test', '0903000002', 'READER', 'ACTIVE'],
   ['Hoàng Minh Châu', 'reader03@library.test', '0903000003', 'READER', 'ACTIVE'],
-  ['Đỗ Quang Dũng', 'reader04@library.test', '0903000004', 'READER', 'ACTIVE'],
-  ['Vũ Thị Hà', 'reader05@library.test', '0903000005', 'READER', 'ACTIVE'],
-  ['Bùi Đức Khang', 'reader06@library.test', '0903000006', 'READER', 'ACTIVE'],
-  ['Ngô Thị Lan', 'reader07@library.test', '0903000007', 'READER', 'ACTIVE'],
-  ['Đặng Văn Long', 'reader08@library.test', '0903000008', 'READER', 'ACTIVE'],
-  ['Phan Thị Mai', 'reader09@library.test', '0903000009', 'READER', 'ACTIVE'],
-  ['Trịnh Công Nam', 'reader10@library.test', '0903000010', 'READER', 'ACTIVE'],
-  ['Lý Thị Oanh', 'reader11@library.test', '0903000011', 'READER', 'ACTIVE'],
-  ['Mai Văn Phúc', 'reader12@library.test', '0903000012', 'READER', 'ACTIVE'],
   ['Tạ Thị Quyên', 'locked01@library.test', '0903000099', 'READER', 'LOCKED'],
-  ['Quản Trị Viên 2', 'admin02@library.test', '0901000002', 'ADMIN', 'ACTIVE'],
 ];
 
 // [tên, tác giả, thể loại, nhà xuất bản, năm, số bản]
@@ -219,40 +208,22 @@ async function main() {
     addLoan('reader02', B('Nguyên lý kế toán'), 'BORROWING', { requested: ago(8) });
     addLoan('reader02', B('Quản trị học'), 'PENDING', { requested: ago(1) });
     addLoan('reader02', B('Marketing căn bản'), 'PENDING', { requested: ago(0) });
-    // reader03: có sách quá hạn (BUS-05)
+    // reader03: có sách quá hạn (BUS-05), một phiếu quá hạn lâu – phí chạm trần 100.000 đ
     addLoan('reader03', B('Lược sử thời gian'), 'OVERDUE', { requested: ago(25) });
+    addLoan('reader03', B('Số đỏ'), 'OVERDUE', { requested: ago(75) });
     addLoan('reader03', B('Atomic Habits'), 'BORROWING', { requested: ago(4) });
-    // reader04: tài khoản mới, chưa mượn
-    // reader05: quá hạn lâu – phí chạm trần 100.000 đ
-    addLoan('reader05', B('Số đỏ'), 'OVERDUE', { requested: ago(75) });
     // Sách hết bản: 1 bản duy nhất đang được mượn
-    addLoan('reader06', B('The Art of Application Performance Testing'), 'BORROWING', { requested: ago(6) });
-    // Thêm vài yêu cầu chờ duyệt cho thủ thư
-    addLoan('reader07', B('Minna no Nihongo Sơ cấp 1'), 'PENDING', { requested: ago(2) });
-    addLoan('reader08', B('English Grammar in Use'), 'PENDING', { requested: ago(1) });
-    addLoan('reader09', B('Nhà giả kim'), 'PENDING', { requested: ago(0) });
-    addLoan('reader10', B('Sapiens: Lược sử loài người'), 'OVERDUE', { requested: ago(20) });
+    addLoan('reader03', B('The Art of Application Performance Testing'), 'BORROWING', { requested: ago(6) });
 
-    // Lịch sử ngẫu nhiên cho thống kê – độc giả 06 → 12
-    const randomReaders = ['reader06', 'reader07', 'reader08', 'reader09', 'reader10', 'reader11', 'reader12'];
+    // Lịch sử đã kết thúc cho danh sách phiếu của thủ thư
+    const readers = ['reader01', 'reader02', 'reader03'];
     const popular = books.filter((b) => b.total >= 4);
-    for (let i = 0; i < 90; i++) {
+    for (let i = 0; i < 30; i++) {
       const book = rand() < 0.6 ? pick(popular) : pick(books);
-      const requested = ago(randInt(20, 180));
-      if (rand() < 0.1) {
-        addLoan(pick(randomReaders), book, 'REJECTED', { requested, reason: 'Độc giả chưa hoàn tất thủ tục thẻ thư viện.' });
-      } else {
-        // 75% trả đúng hạn, 25% trả trễ 1–20 ngày
-        const returnOffset = rand() < 0.75 ? randInt(3, 14) : randInt(15, 34);
-        addLoan(pick(randomReaders), book, 'RETURNED', { requested, returnOffset });
-      }
-    }
-    // Một số phiếu đang mượn của độc giả 11, 12
-    for (const user of ['reader11', 'reader12']) {
-      for (let k = 0; k < 2; k++) {
-        const candidates = books.filter((b) => b.total - b.borrowed >= 2 && !usedActive.has(`${userIds[user]}:${b.id}`));
-        addLoan(user, pick(candidates), 'BORROWING', { requested: ago(randInt(1, 10)) });
-      }
+      const requested = ago(randInt(90, 180));
+      // 75% trả đúng hạn, 25% trả trễ 1–20 ngày
+      const returnOffset = rand() < 0.75 ? randInt(3, 14) : randInt(15, 34);
+      addLoan(pick(readers), book, 'RETURNED', { requested, returnOffset });
     }
 
     for (const l of loans) {

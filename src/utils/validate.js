@@ -35,7 +35,6 @@ const MSG = {
   q: 'Từ khoá tối đa 100 ký tự',
   paging: 'Tham số phân trang không hợp lệ',
   reason: 'Lý do từ chối từ 5 đến 200 ký tự',
-  range: 'Khoảng thời gian không hợp lệ',
 };
 
 const isStr = (v) => typeof v === 'string';

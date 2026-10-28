@@ -1,10 +1,9 @@
 # TÀI LIỆU YÊU CẦU NGƯỜI SỬ DỤNG (URD)
 
-**Hệ thống quản lý mượn – trả sách thư viện (LibraryHub)** · Phiên bản 2.0 · 28/10/2026  
+**Hệ thống quản lý mượn – trả sách thư viện (LibraryHub)** · Phiên bản 2.1 · 28/10/2026  
 Đơn vị chủ trì: Thư viện – Trường Đại học Việt Nhật · Người biên soạn: Mỵ Hiểu Minh (MSSV 23110198)
 
 > Bản chính thức theo Biểu mẫu 03: `docs/URD.docx`. File này là bản Markdown cùng nội dung.
-
 ## 1 Giới thiệu
 
 ### 1.1 Mục đích tài liệu
@@ -13,13 +12,13 @@ Tài liệu Yêu cầu người sử dụng (URD) mô tả nhu cầu của thư 
 
 Tài liệu là căn cứ cho các công việc sau:
 
-- **Đặc tả và thiết kế:** là đầu vào để chi tiết hoá thành Tài liệu đặc tả yêu cầu phần mềm (SRS v2.0).
+- **Đặc tả và thiết kế:** là đầu vào để chi tiết hoá thành Tài liệu đặc tả yêu cầu phần mềm (SRS v2.1).
 - **Lập trình:** xác định phạm vi chức năng, quy tắc nghiệp vụ và thông báo hiển thị.
 - **Kiểm thử và nghiệm thu:** mỗi yêu cầu (US-xx) có tiêu chí nghiệm thu (AC) để viết trường hợp kiểm thử; các con số ở mục 2.3 và mục 5 là đầu vào cho kiểm thử hiệu năng.
 
 ### 1.2 Phạm vi và đối tượng sử dụng
 
-**Trong phạm vi:** đăng ký và đăng nhập tài khoản; tra cứu sách; gửi yêu cầu mượn, gia hạn, trả sách và tính phí phạt; thủ thư duyệt hoặc từ chối yêu cầu; quản lý đầu sách; quản lý tài khoản; thống kê sách mượn nhiều và sách quá hạn.
+**Trong phạm vi:** đăng ký và đăng nhập tài khoản; tra cứu sách; gửi yêu cầu mượn, gia hạn, trả sách và tính phí phạt; thủ thư duyệt hoặc từ chối yêu cầu; quản lý đầu sách; khoá/mở khoá tài khoản; xem số liệu tổng quan của thư viện.
 
 **Ngoài phạm vi:** thanh toán phí phạt trực tuyến (phí được thu tại quầy, hệ thống chỉ ghi nhận số tiền); gửi email/SMS; đặt trước sách đã hết; quản lý nhiều chi nhánh; mã vạch/RFID; khôi phục mật khẩu qua email.
 
@@ -28,7 +27,7 @@ Tài liệu là căn cứ cho các công việc sau:
 - **Khách (R-00):** người chưa đăng nhập; xem, tìm sách và đăng ký tài khoản.
 - **Độc giả (R-01):** sinh viên, giảng viên có tài khoản; tìm sách, gửi yêu cầu mượn, gia hạn, xem lịch sử mượn của mình.
 - **Thủ thư (R-02):** nhân viên thư viện; duyệt/từ chối yêu cầu, xác nhận trả sách, quản lý đầu sách, xem thống kê.
-- **Quản trị viên (R-03):** người quản lý hệ thống; khoá/mở khoá tài khoản, đổi vai trò, xem thống kê.
+- **Quản trị viên (R-03):** người quản lý hệ thống; khoá/mở khoá tài khoản, xem thống kê.
 
 **Đối tượng đọc tài liệu:** chủ hệ thống, người phát triển, tester (bạn cặp kiểm thử) và giảng viên học phần.
 
@@ -74,7 +73,7 @@ Mức ưu tiên ở mục 6 được ghi bằng chữ ("Bắt buộc", "Nên có
 
 - Biểu mẫu 03 – URD, học phần Đánh giá hiệu năng, Trường Đại học Việt Nhật.
 - Quy định mượn – trả sách của thư viện đã thống nhất với chủ hệ thống (các quy tắc UR-BR-01 đến UR-BR-08 ở mục 3).
-- Tài liệu đặc tả yêu cầu phần mềm LibraryHub (SRS) phiên bản 2.0 – chi tiết hoá tài liệu này.
+- Tài liệu đặc tả yêu cầu phần mềm LibraryHub (SRS) phiên bản 2.1 – chi tiết hoá tài liệu này.
 - Tài liệu API và Hướng dẫn vận hành, bàn giao của LibraryHub (đi kèm mã nguồn).
 
 **Lịch sử phiên bản:**
@@ -84,6 +83,7 @@ Mức ưu tiên ở mục 6 được ghi bằng chữ ("Bắt buộc", "Nên có
 | 1.0 | 02/10/2026 | Nhu cầu, 12 user story và 3 luồng nghiệp vụ | Mỵ Hiểu Minh |
 | 1.1 | 23/10/2026 | Thống nhất tác giả, liên kết tài liệu và mô tả dữ liệu bàn giao | Mỵ Hiểu Minh |
 | 2.0 | 28/10/2026 | Trình bày lại theo Biểu mẫu 03: bổ sung hiện trạng, mức độ sử dụng, khung cảnh, ngữ cảnh, sơ đồ hoạt động, trường dữ liệu, trạng thái, mã lỗi và bảng tổng hợp. Nội dung nghiệp vụ không đổi so với 1.1. | Mỵ Hiểu Minh |
+| 2.1 | 28/10/2026 | Rút gọn theo góp ý giảng viên: quản lý tài khoản chỉ còn khoá/mở khoá (bỏ tìm, lọc, đổi vai trò); thống kê chỉ còn số liệu tổng quan; dữ liệu mẫu còn 6 tài khoản. | Mỵ Hiểu Minh |
 
 *Bảng 1-3: Lịch sử phiên bản tài liệu*
 
@@ -106,7 +106,7 @@ Các số liệu dưới đây là ước tính của thư viện, dùng làm c�
 - Giờ cao điểm đầu học kỳ, mỗi lượt mượn mất 5–10 phút do xếp hàng và ghi sổ.
 - Tiền phạt tính tay dễ sai (đếm nhầm ngày, quên mức phạt tối đa); thư viện ước tính khoảng 1 trên 20 phiếu trả trễ bị tính sai.
 - Không kiểm soát được giới hạn số sách một độc giả đang giữ và độc giả đang có sách quá hạn.
-- Không có số liệu về sách được mượn nhiều hay danh sách phiếu quá hạn để nhắc độc giả và lên kế hoạch bổ sung sách.
+- Không nắm nhanh được tổng số sách, số bản còn và số phiếu ở từng trạng thái.
 
 ### 2.3 Mức độ sử dụng và tăng trưởng giao dịch
 
@@ -128,7 +128,7 @@ Các con số trên là đầu vào để đặt ngưỡng hiệu năng ở mụ
 | BG-01 | Độc giả tự tra cứu và gửi yêu cầu mượn trực tuyến | ≥ 80% yêu cầu mượn được tạo qua hệ thống |
 | BG-02 | Loại bỏ sai sót khi tính phí phạt | Phí phạt do hệ thống tự tính; 0 thao tác tính tay |
 | BG-03 | Thủ thư xử lý yêu cầu nhanh | Duyệt một yêu cầu trong tối đa 3 thao tác |
-| BG-04 | Có số liệu phục vụ bổ sung sách và nhắc trả | Thống kê sách mượn nhiều, sách quá hạn xem được bất kỳ lúc nào |
+| BG-04 | Nắm được tình hình kho sách và phiếu mượn | Số liệu tổng quan xem được bất kỳ lúc nào |
 
 *Bảng 2-2: Mục tiêu nghiệp vụ*
 
@@ -164,7 +164,7 @@ Hệ thống không gửi email/SMS và không kết nối cổng thanh toán.
 - Độc giả biết ngay sách còn hay hết và gửi yêu cầu mượn ở bất kỳ đâu, giảm lượt đến quầy không cần thiết.
 - Thủ thư chỉ cần bấm Duyệt/Xác nhận trả; hạn trả, phí phạt và số bản còn lại do hệ thống tự cập nhật.
 - Các quy tắc giới hạn 5 cuốn, chặn khi quá hạn và không mượn trùng được áp dụng tự động, nhất quán.
-- Thư viện có số liệu sách mượn nhiều và danh sách quá hạn để bổ sung sách và nhắc độc giả.
+- Thư viện xem nhanh tổng số sách, số bản còn và số phiếu ở từng trạng thái.
 
 ## 3 Yêu cầu nghiệp vụ chi tiết
 
@@ -187,7 +187,7 @@ Hình 3-1 thể hiện các bên tham gia (Độc giả, Hệ thống, Thủ th�
 | UR-BR-05 | Độc giả đang có sách quá hạn thì không được mượn thêm. |
 | UR-BR-06 | Chỉ cho mượn khi đầu sách còn bản; số bản còn lại chỉ thay đổi khi duyệt (giảm 1) và khi trả (tăng 1). |
 | UR-BR-07 | Tài khoản bị khoá không đăng nhập và không thao tác được. |
-| UR-BR-08 | Quản trị viên không được tự khoá hoặc tự đổi vai trò của chính mình. |
+| UR-BR-08 | Quản trị viên không được tự khoá tài khoản của chính mình. |
 
 *Bảng 3-1: Quy tắc nghiệp vụ mức người dùng*
 
@@ -231,6 +231,7 @@ Trạng thái của **đầu sách** theo số bản còn lại: **Còn sách** 
 
 **Chức năng 1: Tìm kiếm sách (US-03)**
 
+- **Câu chuyện người dùng:** Là Khách hoặc Độc giả, tôi muốn tìm sách theo tên, tác giả, ISBN, thể loại và lọc sách còn bản, để nhanh chóng biết thư viện có cuốn mình cần hay không. **Ưu tiên:** Bắt buộc.
 - **Mô tả:** Khách và người dùng đã đăng nhập tìm sách theo từ khoá, lọc theo thể loại, tình trạng còn sách và sắp xếp kết quả.
 - **Luồng xử lý:**
   - Người dùng nhập từ khoá và/hoặc chọn bộ lọc, bấm Tìm.
@@ -244,6 +245,7 @@ Trạng thái của **đầu sách** theo số bản còn lại: **Còn sách** 
 
 **Chức năng 2: Xem chi tiết sách (US-04)**
 
+- **Câu chuyện người dùng:** Là Khách hoặc Độc giả, tôi muốn xem chi tiết một đầu sách và số bản còn lại, để quyết định có gửi yêu cầu mượn hay không. **Ưu tiên:** Bắt buộc.
 - **Mô tả:** Xem đầy đủ thông tin một đầu sách để quyết định có mượn hay không.
 - **Luồng xử lý:**
   - Người dùng bấm vào một sách trong kết quả tìm kiếm.
@@ -256,6 +258,7 @@ Trạng thái của **đầu sách** theo số bản còn lại: **Còn sách** 
 
 **Chức năng 3: Gửi yêu cầu mượn (US-05)**
 
+- **Câu chuyện người dùng:** Là Độc giả, tôi muốn gửi yêu cầu mượn một đầu sách còn bản, để giữ chỗ cuốn sách mà không cần đến quầy. **Ưu tiên:** Bắt buộc.
 - **Mô tả:** Độc giả gửi yêu cầu mượn một bản của đầu sách mà không cần đến quầy.
 - **Luồng xử lý:**
   - Độc giả bấm "Gửi yêu cầu mượn" ở trang chi tiết sách.
@@ -271,6 +274,7 @@ Trạng thái của **đầu sách** theo số bản còn lại: **Còn sách** 
 
 **Chức năng 4: Duyệt / từ chối yêu cầu mượn (US-08)**
 
+- **Câu chuyện người dùng:** Là Thủ thư, tôi muốn duyệt hoặc từ chối các yêu cầu mượn đang chờ, để kiểm soát việc cho mượn và số bản trong kho. **Ưu tiên:** Bắt buộc.
 - **Mô tả:** Thủ thư xử lý các yêu cầu chờ duyệt theo thứ tự gửi trước xử lý trước.
 - **Luồng xử lý:**
   - Thủ thư mở danh sách "Yêu cầu chờ duyệt" (cũ nhất ở đầu), xem tên, email độc giả, tên sách, số bản còn, thời điểm gửi.
@@ -324,6 +328,7 @@ Phiếu mượn dùng chung các trạng thái ở Bảng 3-3. Trong luồng nà
 
 **Chức năng 1: Xem lịch sử mượn (US-06)**
 
+- **Câu chuyện người dùng:** Là Độc giả, tôi muốn xem lịch sử mượn, hạn trả và phí phạt của mình, để trả sách đúng hạn và biết mình đang nợ bao nhiêu. **Ưu tiên:** Bắt buộc.
 - **Mô tả:** Độc giả xem tất cả phiếu của chính mình để theo dõi hạn trả và phí phạt.
 - **Luồng xử lý:**
   - Độc giả mở "Lịch sử mượn"; có thể lọc theo trạng thái.
@@ -336,6 +341,7 @@ Phiếu mượn dùng chung các trạng thái ở Bảng 3-3. Trong luồng nà
 
 **Chức năng 2: Gia hạn sách (US-07)**
 
+- **Câu chuyện người dùng:** Là Độc giả, tôi muốn gia hạn một phiếu đang mượn thêm 7 ngày, để có thêm thời gian đọc mà không phải trả rồi mượn lại. **Ưu tiên:** Nên có.
 - **Mô tả:** Độc giả lùi hạn trả của một phiếu đang mượn để có thêm thời gian đọc.
 - **Luồng xử lý:**
   - Ở Lịch sử mượn, độc giả bấm "Gia hạn" trên phiếu Đang mượn chưa gia hạn.
@@ -347,6 +353,7 @@ Phiếu mượn dùng chung các trạng thái ở Bảng 3-3. Trong luồng nà
 
 **Chức năng 3: Xác nhận trả sách và tính phí phạt (US-09)**
 
+- **Câu chuyện người dùng:** Là Thủ thư, tôi muốn xác nhận độc giả đã trả sách và để hệ thống tự tính phí phạt, để không phải tính tay và tránh sai sót. **Ưu tiên:** Bắt buộc.
 - **Mô tả:** Thủ thư ghi nhận độc giả trả sách; hệ thống tự tính phí phạt.
 - **Luồng xử lý:**
   - Thủ thư mở "Quản lý phiếu mượn", tìm theo mã phiếu hoặc email độc giả.
@@ -406,6 +413,7 @@ Phiếu mượn dùng chung các trạng thái ở Bảng 3-3. Trong luồng nà
 
 **Chức năng 1: Thêm, sửa, xoá đầu sách (US-10)**
 
+- **Câu chuyện người dùng:** Là Thủ thư, tôi muốn thêm, sửa, xoá đầu sách, để danh mục trên hệ thống luôn khớp với kho. **Ưu tiên:** Bắt buộc.
 - **Mô tả:** Thủ thư cập nhật danh mục sách để luôn đúng với kho.
 - **Luồng xử lý:**
   - Thủ thư mở "Quản lý sách", bấm "Thêm sách" (hoặc "Sửa" trên một dòng), nhập dữ liệu theo Bảng 3-7, bấm Lưu.
@@ -445,7 +453,6 @@ Nhóm chức năng nền tảng dùng chung cho cả ba luồng trên: đăng k�
 | 5 | Xác nhận mật khẩu | confirmPassword | Chuỗi | M | Trùng với mật khẩu (chỉ khi đăng ký). |
 | 6 | Vai trò | role | Danh mục | M | Độc giả, Thủ thư, Quản trị viên; tài khoản tự đăng ký luôn là Độc giả. |
 | 7 | Trạng thái tài khoản | status | Danh mục | M | Hoạt động hoặc Bị khoá. |
-| 8 | Khoảng thống kê | from, to | Ngày | O | Ngày có thật; từ ngày ≤ đến ngày; cách nhau tối đa 366 ngày; mặc định 30 ngày gần nhất. |
 
 *Bảng 3-10: Yêu cầu thông tin của luồng tài khoản và thống kê*
 
@@ -462,6 +469,7 @@ Nhóm chức năng nền tảng dùng chung cho cả ba luồng trên: đăng k�
 
 **Chức năng 1: Đăng ký tài khoản (US-01)**
 
+- **Câu chuyện người dùng:** Là Khách, tôi muốn tự đăng ký tài khoản bằng email, để mượn sách trực tuyến mà không phải ra quầy làm thẻ. **Ưu tiên:** Bắt buộc.
 - **Mô tả:** Khách tự tạo tài khoản Độc giả bằng email.
 - **Luồng xử lý:**
   - Khách mở "Đăng ký", nhập họ tên, email, số điện thoại, mật khẩu, xác nhận mật khẩu.
@@ -475,6 +483,7 @@ Nhóm chức năng nền tảng dùng chung cho cả ba luồng trên: đăng k�
 
 **Chức năng 2: Đăng nhập / đăng xuất (US-02)**
 
+- **Câu chuyện người dùng:** Là người dùng có tài khoản, tôi muốn đăng nhập và đăng xuất, để dùng đúng chức năng theo vai trò và bảo vệ tài khoản của mình. **Ưu tiên:** Bắt buộc.
 - **Mô tả:** Người dùng có tài khoản đăng nhập để dùng chức năng theo vai trò và đăng xuất để bảo vệ tài khoản.
 - **Luồng xử lý:**
   - Người dùng nhập email và mật khẩu, bấm Đăng nhập.
@@ -489,27 +498,29 @@ Nhóm chức năng nền tảng dùng chung cho cả ba luồng trên: đăng k�
 
 **Chức năng 3: Quản lý tài khoản (US-11)**
 
-- **Mô tả:** Quản trị viên tìm tài khoản, khoá/mở khoá và đổi vai trò.
+- **Câu chuyện người dùng:** Là Quản trị viên, tôi muốn xem danh sách tài khoản và khoá/mở khoá tài khoản, để ngăn tài khoản vi phạm sử dụng hệ thống. **Ưu tiên:** Bắt buộc.
+- **Mô tả:** Quản trị viên xem danh sách tài khoản và khoá/mở khoá tài khoản.
 - **Luồng xử lý:**
-  - Quản trị viên mở "Quản trị", tìm theo tên/email, lọc theo vai trò và trạng thái.
-  - Bấm "Khoá"/"Mở khoá" hoặc chọn vai trò mới trên một dòng.
+  - Quản trị viên mở "Quản trị"; danh sách tài khoản hiển thị theo trang, 20 tài khoản mỗi trang.
+  - Bấm "Khoá" hoặc "Mở khoá" trên một dòng.
   - Hệ thống lưu thay đổi; tài khoản bị khoá mất quyền ngay ở thao tác kế tiếp.
 - **Quy tắc nghiệp vụ:** UR-BR-07, UR-BR-08. Danh sách không bao giờ hiển thị mật khẩu.
 - **Tiêu chí nghiệm thu:**
   - AC-11.1: Tài khoản bị khoá không đăng nhập được và phiên đang mở bị vô hiệu ở lần thao tác kế tiếp.
-  - AC-11.2: Quản trị viên không thể tự khoá hoặc tự đổi vai trò của chính mình.
+  - AC-11.2: Quản trị viên không thể tự khoá tài khoản của chính mình.
 
 **Chức năng 4: Xem thống kê (US-12)**
 
-- **Mô tả:** Thủ thư và quản trị viên xem số liệu tổng quan, sách mượn nhiều và phiếu quá hạn.
+- **Câu chuyện người dùng:** Là Thủ thư hoặc Quản trị viên, tôi muốn xem số liệu tổng quan của thư viện, để nắm tình hình sách và phiếu mượn mà không phải đếm tay. **Ưu tiên:** Nên có.
+- **Mô tả:** Thủ thư và quản trị viên xem số liệu tổng quan của thư viện.
 - **Luồng xử lý:**
-  - Mở "Thống kê"; chọn khoảng thời gian (mặc định 30 ngày gần nhất).
-  - Hệ thống hiển thị: tổng đầu sách, tổng bản, số phiếu theo từng trạng thái, tổng độc giả; tối đa 10 sách được mượn nhiều nhất; danh sách phiếu quá hạn.
-- **Quy tắc nghiệp vụ:** Sách mượn nhiều tính theo số phiếu được duyệt trong khoảng đã chọn. Phiếu quá hạn kèm số ngày quá hạn và phí tạm tính, quá hạn lâu nhất ở đầu.
+  - Mở "Thống kê".
+  - Hệ thống hiển thị: tổng đầu sách, tổng bản, số bản còn, tổng độc giả và số phiếu theo từng trạng thái.
+- **Quy tắc nghiệp vụ:** Số liệu tính tại thời điểm mở trang, không tính đầu sách đã xoá.
 - **Tiêu chí nghiệm thu:**
-  - AC-12.1: Hiển thị tối đa 10 sách được mượn nhiều nhất trong khoảng thời gian chọn.
-  - AC-12.2: Hiển thị danh sách phiếu đang quá hạn, số ngày quá hạn và phí phạt tạm tính.
-  - AC-12.3: Khoảng thời gian sai (từ ngày sau đến ngày, quá 366 ngày, hoặc ngày không có thật) thì báo "Khoảng thời gian không hợp lệ".
+  - AC-12.1: Hiển thị đúng tổng đầu sách, tổng bản, số bản còn và tổng độc giả.
+  - AC-12.2: Hiển thị đúng số phiếu ở từng trạng thái; tổng các trạng thái bằng tổng số phiếu.
+  - AC-12.3: Độc giả và khách không mở được trang Thống kê.
 
 #### 3.5.4 Bảng mã lỗi
 
@@ -521,14 +532,13 @@ Nhóm chức năng nền tảng dùng chung cho cả ba luồng trên: đăng k�
 | 4 | ERR-15 | Tài khoản bị khoá đăng nhập hoặc đang thao tác. | Tài khoản đã bị khoá. Vui lòng liên hệ thư viện. |
 | 5 | ERR-09 | Chưa đăng nhập hoặc phiên đã hết hạn/đã đăng xuất. | Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại. |
 | 6 | ERR-16 | Người dùng mở chức năng không thuộc vai trò của mình. | Bạn không có quyền thực hiện thao tác này. |
-| 7 | ERR-17 | Quản trị viên tự khoá hoặc tự đổi vai trò của chính mình. | Bạn không thể khoá tài khoản của chính mình. / Bạn không thể đổi vai trò của chính mình. |
-| 8 | ERR-01 | Khoảng thống kê không hợp lệ. | Khoảng thời gian không hợp lệ |
+| 7 | ERR-17 | Quản trị viên tự khoá tài khoản của chính mình. | Bạn không thể khoá tài khoản của chính mình. |
 
 *Bảng 3-12: Bảng mã lỗi của luồng tài khoản và thống kê*
 
 ## 4 Yêu cầu giao diện và dữ liệu
 
-**Danh sách màn hình** (mockup chi tiết ở SRS v2.0, mục 2.6):
+**Danh sách màn hình** (mockup chi tiết ở SRS v2.1, mục 2.6):
 
 | Mã | Màn hình | Người dùng | Nội dung chính |
 |---|---|---|---|
@@ -540,8 +550,8 @@ Nhóm chức năng nền tảng dùng chung cho cả ba luồng trên: đăng k�
 | SCR-06 | Yêu cầu chờ duyệt | Thủ thư | Danh sách chờ duyệt, nút Duyệt/Từ chối, hộp thoại lý do. |
 | SCR-07 | Quản lý phiếu mượn | Thủ thư | Tìm theo mã phiếu/email, lọc trạng thái, nút Xác nhận trả. |
 | SCR-08 | Quản lý sách | Thủ thư | Bảng đầu sách, form Thêm/Sửa, xác nhận Xoá. |
-| SCR-09 | Quản trị tài khoản | Quản trị viên | Tìm, lọc, Khoá/Mở khoá, đổi vai trò. |
-| SCR-10 | Thống kê | Thủ thư, Quản trị viên | Thẻ tổng quan, sách mượn nhiều, phiếu quá hạn. |
+| SCR-09 | Quản trị tài khoản | Quản trị viên | Danh sách tài khoản có phân trang, nút Khoá/Mở khoá. |
+| SCR-10 | Thống kê | Thủ thư, Quản trị viên | Các thẻ số liệu tổng quan. |
 
 *Bảng 4-1: Danh sách màn hình*
 
@@ -556,7 +566,7 @@ Nhóm chức năng nền tảng dùng chung cho cả ba luồng trên: đăng k�
 **Yêu cầu dữ liệu:**
 
 - Ngày giờ theo múi giờ Việt Nam (UTC+7).
-- Dữ liệu mẫu tối thiểu: ≥ 50 đầu sách, ≥ 10 độc giả, có sẵn phiếu ở mọi trạng thái. Bộ dữ liệu đi kèm mã nguồn gồm 60 đầu sách, 17 tài khoản (2 quản trị viên, 2 thủ thư, 13 độc giả kể cả tài khoản bị khoá) và 113 phiếu mượn; các ngày mẫu được tạo tương đối theo ngày nạp dữ liệu.
+- Dữ liệu mẫu tối thiểu: ≥ 50 đầu sách, có tài khoản cho mọi vai trò, có sẵn phiếu ở mọi trạng thái. Bộ dữ liệu đi kèm mã nguồn gồm 60 đầu sách, 6 tài khoản (1 quản trị viên, 1 thủ thư, 4 độc giả kể cả tài khoản bị khoá) và 45 phiếu mượn; các ngày mẫu được tạo tương đối theo ngày nạp dữ liệu.
 - Dữ liệu được lưu bền vững trong cơ sở dữ liệu; có thể nạp lại bộ dữ liệu mẫu để đưa hệ thống về trạng thái ban đầu khi kiểm thử.
 - Không lưu và không hiển thị mật khẩu ở dạng đọc được.
 
@@ -587,8 +597,8 @@ Nhóm chức năng nền tảng dùng chung cho cả ba luồng trên: đăng k�
 | US-08 | Duyệt / từ chối yêu cầu | Thủ thư kiểm soát việc cho mượn. | Bắt buộc |
 | US-09 | Xác nhận trả sách | Thủ thư ghi nhận trả, hệ thống tự tính phí phạt. | Bắt buộc |
 | US-10 | Quản lý đầu sách | Thêm, sửa, xoá đầu sách cho đúng với kho. | Bắt buộc |
-| US-11 | Quản lý tài khoản | Khoá/mở khoá tài khoản và đổi vai trò. | Bắt buộc |
-| US-12 | Xem thống kê | Sách mượn nhiều, phiếu quá hạn, số liệu tổng quan. | Nên có |
+| US-11 | Quản lý tài khoản | Khoá/mở khoá tài khoản. | Bắt buộc |
+| US-12 | Xem thống kê | Số liệu tổng quan về sách và phiếu mượn. | Nên có |
 
 *Bảng 6-1: Bảng tổng hợp các yêu cầu chức năng*
 

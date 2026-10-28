@@ -1,15 +1,14 @@
 # TÀI LIỆU ĐẶC TẢ YÊU CẦU PHẦN MỀM (SRS)
 
-**Hệ thống quản lý mượn – trả sách thư viện (LibraryHub)** · Phiên bản 2.0 · 28/10/2026  
-Chi tiết hoá URD: URD LibraryHub – Phiên bản 2.0 · Người biên soạn: Mỵ Hiểu Minh (MSSV 23110198)
+**Hệ thống quản lý mượn – trả sách thư viện (LibraryHub)** · Phiên bản 2.1 · 28/10/2026  
+Chi tiết hoá URD: URD LibraryHub – Phiên bản 2.1 · Người biên soạn: Mỵ Hiểu Minh (MSSV 23110198)
 
 > Bản chính thức theo Biểu mẫu 04: `docs/SRS.docx`. File này là bản Markdown cùng nội dung.
-
 ## 1 Giới thiệu
 
 ### 1.1 Mục đích
 
-Tài liệu đặc tả yêu cầu phần mềm (SRS) chi tiết hoá URD LibraryHub phiên bản 2.0 thành các yêu cầu **kiểm chứng được**: mỗi chức năng được mô tả thành use case có luồng sự kiện, dữ liệu đầu vào, quy tắc nghiệp vụ, mã lỗi và màn hình tương ứng; mỗi yêu cầu phi chức năng có ngưỡng đo cụ thể.
+Tài liệu đặc tả yêu cầu phần mềm (SRS) chi tiết hoá URD LibraryHub phiên bản 2.1 thành các yêu cầu **kiểm chứng được**: mỗi chức năng được mô tả thành use case có luồng sự kiện, dữ liệu đầu vào, quy tắc nghiệp vụ, mã lỗi và màn hình tương ứng; mỗi yêu cầu phi chức năng có ngưỡng đo cụ thể.
 
 Tài liệu dùng cho: người phát triển (lập trình đúng hành vi), tester (thiết kế trường hợp kiểm thử chức năng và hiệu năng), giảng viên (đánh giá và nghiệm thu). Khi giao diện và tài liệu khác nhau, **hành vi ghi trong tài liệu này là hành vi đúng**.
 
@@ -40,7 +39,7 @@ Hệ thống LibraryHub là ứng dụng web gồm giao diện HTML/JavaScript v
 ### 1.4 Tài liệu tham khảo
 
 - Biểu mẫu 04 – SRS, học phần Đánh giá hiệu năng, Trường Đại học Việt Nhật.
-- URD LibraryHub phiên bản 2.0 (28/10/2026) – tài liệu được chi tiết hoá.
+- URD LibraryHub phiên bản 2.1 (28/10/2026) – tài liệu được chi tiết hoá.
 - Tài liệu API LibraryHub – chi tiết từng endpoint, ví dụ yêu cầu và phản hồi.
 - Hướng dẫn vận hành và bàn giao LibraryHub – cài đặt, nạp dữ liệu mẫu, tài khoản thử.
 
@@ -66,7 +65,7 @@ Hệ thống LibraryHub là ứng dụng web gồm giao diện HTML/JavaScript v
 | Mã v1.1 | Mã v2.0 | Ghi chú |
 |---|---|---|
 | BR-01 → BR-13 | BUS-01 → BUS-13 | Quy tắc nghiệp vụ; cùng số, cùng nội dung |
-| VR-01 → VR-21 | VAL-01 → VAL-21 | Quy tắc kiểm tra dữ liệu; cùng số, cùng nội dung |
+| VR-01 → VR-20 | VAL-01 → VAL-20 | Quy tắc kiểm tra dữ liệu; cùng số, cùng nội dung (VR-21 bỏ ở 2.1) |
 | FR, NFR, MSG, FLOW | Giữ nguyên | – |
 | (chưa có) | UC, SCR, DIS, ERR | Bổ sung mới theo biểu mẫu |
 
@@ -79,6 +78,7 @@ Hệ thống LibraryHub là ứng dụng web gồm giao diện HTML/JavaScript v
 | 1.0 | 02/10/2026 | Đặc tả chức năng, nghiệp vụ, dữ liệu, phân quyền và NFR | Mỵ Hiểu Minh |
 | 1.1 | 23/10/2026 | Thống nhất tác giả; làm rõ đầu vào đăng nhập, tiền điều kiện FLOW-03 và quy trình đo NFR | Mỵ Hiểu Minh |
 | 2.0 | 28/10/2026 | Trình bày lại theo Biểu mẫu 04: biểu đồ use case, quy trình, đặc tả 12 use case, mockup màn hình, bảng mã lỗi, ma trận truy vết, câu hỏi nghiệp vụ. Đổi BR→BUS, VR→VAL. Hành vi hệ thống không đổi so với 1.1. | Mỵ Hiểu Minh |
+| 2.1 | 28/10/2026 | Rút gọn theo góp ý giảng viên: UC-11 chỉ còn xem danh sách và khoá/mở khoá (bỏ tìm, lọc, đổi vai trò); UC-12 chỉ còn số liệu tổng quan (bỏ sách mượn nhiều, phiếu quá hạn, VAL-21); dữ liệu mẫu còn 6 tài khoản. | Mỵ Hiểu Minh |
 
 *Bảng 1-4: Lịch sử phiên bản tài liệu*
 
@@ -91,7 +91,7 @@ Hệ thống LibraryHub là ứng dụng web gồm giao diện HTML/JavaScript v
 | Khách (R-00) | Người chưa đăng nhập. Xem trang chủ, tìm và xem chi tiết sách, đăng ký tài khoản, đăng nhập. |
 | Độc giả (R-01) – `READER` | Gửi yêu cầu mượn, gia hạn, xem lịch sử mượn **của chính mình**. Là vai trò mặc định khi đăng ký. |
 | Thủ thư (R-02) – `LIBRARIAN` | Duyệt/từ chối yêu cầu mượn, xác nhận trả sách, thêm/sửa/xoá đầu sách, xem thống kê. |
-| Quản trị viên (R-03) – `ADMIN` | Quản lý tài khoản (khoá/mở khoá, đổi vai trò), xem thống kê. |
+| Quản trị viên (R-03) – `ADMIN` | Quản lý tài khoản (khoá/mở khoá), xem thống kê. |
 
 *Bảng 2-1: Các tác nhân của hệ thống*
 
@@ -579,12 +579,12 @@ Sơ đồ trạng thái phiếu mượn; nhãn tiếng Việt hiển thị theo 
 | **Mã Use case** | UC-11 |
 | **Tên Use case** | Quản lý tài khoản |
 | **Tác nhân** | Quản trị viên |
-| **Mô tả** | Quản trị viên tìm tài khoản, khoá/mở khoá và đổi vai trò. |
+| **Mô tả** | Quản trị viên xem danh sách tài khoản và khoá/mở khoá tài khoản. |
 | **Sự kiện kích hoạt** | Quản trị viên mở "Quản trị" (SCR-09). |
 | **Tiền điều kiện** | Quản trị viên ACTIVE đã đăng nhập. |
-| **Luồng sự kiện chính (Thành công)** | 1. *Quản trị viên*: Tìm theo tên/email, lọc vai trò và trạng thái; 20 tài khoản/trang.<br>2. *Hệ thống*: `GET /api/admin/users` trả danh sách, **không bao giờ** kèm mật khẩu hay mã băm.<br>3. *Quản trị viên*: Bấm "Khoá"/"Mở khoá" hoặc chọn vai trò mới trên một dòng.<br>4. *Hệ thống*: `PATCH /api/admin/users/{id}/status` hoặc `/role`: lưu thay đổi; trả 200.<br>5. *Hệ thống*: Tài khoản bị khoá nhận 403 ACCOUNT_LOCKED ngay ở lần gọi API kế tiếp (BUS-10). |
-| **Luồng sự kiện thay thế** | 4a. *Hệ thống*: Quản trị viên đổi trạng thái **hoặc vai trò** của chính mình: 409 SELF_MODIFICATION (ERR-17), không đổi dữ liệu.<br>4b. *Hệ thống*: status ngoài ACTIVE/LOCKED hoặc role ngoài READER/LIBRARIAN/ADMIN: 400 (ERR-01).<br>4c. *Hệ thống*: Tài khoản không tồn tại: 404 "Không tìm thấy tài khoản." (ERR-03). |
-| **Hậu điều kiện** | Trạng thái hoặc vai trò của tài khoản đích được cập nhật. |
+| **Luồng sự kiện chính (Thành công)** | 1. *Quản trị viên*: Mở danh sách tài khoản; 20 tài khoản/trang, sắp xếp theo ID tăng dần.<br>2. *Hệ thống*: `GET /api/admin/users` trả danh sách, **không bao giờ** kèm mật khẩu hay mã băm.<br>3. *Quản trị viên*: Bấm "Khoá" hoặc "Mở khoá" trên một dòng.<br>4. *Hệ thống*: `PATCH /api/admin/users/{id}/status`: lưu trạng thái mới; trả 200.<br>5. *Hệ thống*: Tài khoản bị khoá nhận 403 ACCOUNT_LOCKED ngay ở lần gọi API kế tiếp (BUS-10). |
+| **Luồng sự kiện thay thế** | 4a. *Hệ thống*: Quản trị viên khoá chính mình: 409 SELF_MODIFICATION (ERR-17), không đổi dữ liệu.<br>4b. *Hệ thống*: status ngoài ACTIVE/LOCKED: 400 (ERR-01).<br>4c. *Hệ thống*: Tài khoản không tồn tại: 404 "Không tìm thấy tài khoản." (ERR-03). |
+| **Hậu điều kiện** | Trạng thái của tài khoản đích được cập nhật. |
 | **Quy tắc nghiệp vụ** | BUS-10, BUS-13. |
 | **Yêu cầu phi chức năng** | NFR-06, NFR-07. |
 | **Truy vết URD** | US-11 (AC-11.1, AC-11.2) |
@@ -595,9 +595,8 @@ Sơ đồ trạng thái phiếu mượn; nhãn tiếng Việt hiển thị theo 
 
 | STT | Trường dữ liệu | Mô tả | Bắt buộc? | Điều kiện hợp lệ | Ví dụ |
 |---|---|---|---|---|---|
-| 1 | q | Tên hoặc email | Không | ≤ 100 ký tự | nguyen |
+| 1 | page | Trang danh sách | Không | VAL-16: số nguyên ≥ 1 | 1 |
 | 2 | status | Trạng thái mới | Khi khoá/mở | ACTIVE hoặc LOCKED | LOCKED |
-| 3 | role | Vai trò mới | Khi đổi vai trò | READER, LIBRARIAN hoặc ADMIN | LIBRARIAN |
 
 *Bảng 2-26: Dữ liệu đầu vào của UC-11*
 
@@ -612,26 +611,19 @@ Sơ đồ trạng thái phiếu mượn; nhãn tiếng Việt hiển thị theo 
 | **Mã Use case** | UC-12 |
 | **Tên Use case** | Xem thống kê |
 | **Tác nhân** | Thủ thư, Quản trị viên |
-| **Mô tả** | Xem số liệu tổng quan, 10 sách được mượn nhiều nhất trong khoảng thời gian và danh sách phiếu quá hạn. |
-| **Sự kiện kích hoạt** | Người dùng mở "Thống kê" (SCR-10) hoặc đổi khoảng thời gian. |
+| **Mô tả** | Xem số liệu tổng quan của thư viện: đầu sách, số bản, độc giả và số phiếu theo trạng thái. |
+| **Sự kiện kích hoạt** | Người dùng mở "Thống kê" (SCR-10). |
 | **Tiền điều kiện** | Thủ thư hoặc Quản trị viên ACTIVE đã đăng nhập. |
-| **Luồng sự kiện chính (Thành công)** | 1. *Người dùng*: Chọn khoảng thời gian (mặc định 30 ngày gần nhất).<br>2. *Hệ thống*: Cập nhật quá hạn tự động (BUS-09); kiểm tra VAL-21.<br>3. *Hệ thống*: `GET /api/stats/summary`: tổng đầu sách, tổng bản, số phiếu theo trạng thái, tổng độc giả.<br>4. *Hệ thống*: `GET /api/stats/top-books`: tối đa 10 đầu sách có số phiếu được duyệt (approvedAt trong khoảng) nhiều nhất, giảm dần; bằng nhau xếp theo tên A→Z.<br>5. *Hệ thống*: `GET /api/stats/overdue`: các phiếu OVERDUE với độc giả, tên sách, hạn trả, số ngày quá hạn, phí tạm tính; số ngày quá hạn giảm dần. |
-| **Luồng sự kiện thay thế** | 2a. *Hệ thống*: from > to, cách nhau quá 366 ngày, sai định dạng hoặc ngày không có thật (ví dụ 2026-02-30): 400 "Khoảng thời gian không hợp lệ" (ERR-01). |
+| **Luồng sự kiện chính (Thành công)** | 1. *Người dùng*: Mở trang "Thống kê".<br>2. *Hệ thống*: Cập nhật quá hạn tự động (BUS-09).<br>3. *Hệ thống*: `GET /api/stats/summary`: tổng đầu sách, tổng bản, số bản còn, tổng độc giả, số phiếu theo từng trạng thái (không tính đầu sách đã xoá).<br>4. *Hệ thống*: Hiển thị các thẻ số liệu. |
+| **Luồng sự kiện thay thế** | 1a. *Hệ thống*: Độc giả gọi chức năng: 403 FORBIDDEN (ERR-16); chưa đăng nhập: 401 (ERR-09). |
 | **Hậu điều kiện** | Người dùng thấy số liệu đúng tại thời điểm xem. |
-| **Quy tắc nghiệp vụ** | BUS-04, BUS-09; VAL-21. |
+| **Quy tắc nghiệp vụ** | BUS-09. |
 | **Yêu cầu phi chức năng** | NFR-07. |
 | **Truy vết URD** | US-12 (AC-12.1 → AC-12.3) |
 
 *Bảng 2-27: Đặc tả use case UC-12 – Xem thống kê*
 
-* Dữ liệu đầu vào gồm các trường dữ liệu sau:
-
-| STT | Trường dữ liệu | Mô tả | Bắt buộc? | Điều kiện hợp lệ | Ví dụ |
-|---|---|---|---|---|---|
-| 1 | from | Từ ngày | Không | VAL-21: YYYY-MM-DD, ngày có thật, ≤ to | 2026-10-01 |
-| 2 | to | Đến ngày | Không | VAL-21: YYYY-MM-DD, ngày có thật; to − from ≤ 366 ngày | 2026-10-28 |
-
-*Bảng 2-28: Dữ liệu đầu vào của UC-12*
+Chức năng không có dữ liệu đầu vào.
 
 ![](img/scr10.png)
 
@@ -659,9 +651,9 @@ Mọi lỗi trả về dạng `{ "error": "<MÃ_L``Ỗ``I_API>", "message": "<th
 | ERR-14<br>401 INVALID_CREDENTIALS | Sai email hoặc mật khẩu khi đăng nhập. | MSG-03: Email hoặc mật khẩu không đúng. |
 | ERR-15<br>403 ACCOUNT_LOCKED | Tài khoản LOCKED đăng nhập hoặc gọi API cần đăng nhập (BUS-10). | MSG-04: Tài khoản đã bị khoá. Vui lòng liên hệ thư viện. |
 | ERR-16<br>403 FORBIDDEN | Gọi chức năng không thuộc vai trò (Bảng 2-2). | Bạn không có quyền thực hiện thao tác này. |
-| ERR-17<br>409 SELF_MODIFICATION | Quản trị viên tự khoá hoặc tự đổi vai trò của chính mình (BUS-13). | Bạn không thể khoá tài khoản của chính mình. / Bạn không thể đổi vai trò của chính mình. |
+| ERR-17<br>409 SELF_MODIFICATION | Quản trị viên tự khoá tài khoản của chính mình (BUS-13). | Bạn không thể khoá tài khoản của chính mình. |
 
-*Bảng 2-29: Bảng mã lỗi*
+*Bảng 2-28: Bảng mã lỗi*
 
 Lỗi không lường trước: 500 INTERNAL_ERROR "Lỗi máy chủ. Vui lòng thử lại sau.", không kèm stack trace (NFR-12).
 
@@ -679,14 +671,14 @@ Lỗi không lường trước: 500 INTERNAL_ERROR "Lỗi máy chủ. Vui lòng 
 | US-08 | FR-08, UC-08, BUS-02, 06, 08; VAL-20 | SCR-06 | Hạn trả sau duyệt; số bản sau duyệt/từ chối; độ dài lý do; duyệt đồng thời bản cuối. |
 | US-09 | FR-09, UC-09, BUS-04, 08; Bảng 4-4 | SCR-07 | Phí ở các mốc 0, 1, 49, 50, 51 ngày; số bản sau trả; trạng thái không hợp lệ. |
 | US-10 | FR-10, UC-10, BUS-11, 12; VAL-10→14 | SCR-08 | ISBN trùng; giảm số bản; xoá sách đang mượn; hiệu lực ngay trong tìm kiếm. |
-| US-11 | FR-11, UC-11, BUS-10, 13 | SCR-09 | Khoá có hiệu lực ngay; tự khoá/tự đổi vai trò; giá trị vai trò không hợp lệ. |
-| US-12 | FR-12, UC-12, VAL-21 | SCR-10 | Khoảng thời gian biên 366 ngày; ngày không có thật; thứ tự sách mượn nhiều. |
+| US-11 | FR-11, UC-11, BUS-10, 13 | SCR-09 | Khoá có hiệu lực ngay; tự khoá; giá trị trạng thái không hợp lệ; phân trang. |
+| US-12 | FR-12, UC-12, BUS-09 | SCR-10 | Đối chiếu từng số liệu với dữ liệu thực; phân quyền xem thống kê. |
 | UQ-01, 02 | NFR-01 → NFR-05 | SCR-03, 04 | Kịch bản JMeter theo mục 3.2. |
 | UQ-03, 04 | NFR-09, 10, 11; DIS-01→10 | Tất cả | Kiểm tra ở 360, 375, 768, 1366, 1920 px; 3 trình duyệt; chính tả. |
 | UQ-05 | NFR-06, NFR-07 | Tất cả | Ma trận phân quyền Bảng 2-2; phản hồi không chứa mật khẩu. |
 | UQ-06 | NFR-08, NFR-12, NFR-13 | – | Giám sát `/api/health`; dữ liệu bất thường; đối chiếu số bản. |
 
-*Bảng 2-30: Ma trận truy vết yêu cầu*
+*Bảng 2-29: Ma trận truy vết yêu cầu*
 
 ### 2.9 Câu hỏi gửi bộ phận nghiệp vụ
 
@@ -699,7 +691,7 @@ Lỗi không lường trước: 500 INTERNAL_ERROR "Lỗi máy chủ. Vui lòng 
 | 5 | Xoá đầu sách có xoá lịch sử phiếu mượn liên quan không? | Chủ hệ thống (Mỵ Hiểu Minh) | Không; xoá mềm, phiếu cũ giữ tên sách (BUS-11). – 02/10/2026 |
 | 6 | Thủ thư/quản trị viên có được mượn sách không? | Chủ hệ thống (Mỵ Hiểu Minh) | Không; chỉ vai trò Độc giả được mượn. – 02/10/2026 |
 
-*Bảng 2-31: Câu hỏi gửi bộ phận nghiệp vụ*
+*Bảng 2-30: Câu hỏi gửi bộ phận nghiệp vụ*
 
 ## 3 Các yêu cầu phi chức năng
 
@@ -722,7 +714,7 @@ Lỗi không lường trước: 500 INTERNAL_ERROR "Lỗi máy chủ. Vui lòng 
 
 ### 3.2 Hiệu năng
 
-**Môi trường đo:** máy chủ triển khai chính thức, dữ liệu mẫu (60 đầu sách, 17 tài khoản, 113 phiếu), JMeter chạy từ một máy khách, think time 0–1 giây.
+**Môi trường đo:** máy chủ triển khai chính thức, dữ liệu mẫu (60 đầu sách, 6 tài khoản, 45 phiếu), JMeter chạy từ một máy khách, think time 0–1 giây.
 
 | Mã | Nội dung yêu cầu |
 |---|---|
@@ -785,7 +777,7 @@ Lỗi không lường trước: 500 INTERNAL_ERROR "Lỗi máy chủ. Vui lòng 
 | BUS-10 | **Khoá tài khoản:** tài khoản LOCKED không đăng nhập được; mọi API cần đăng nhập gọi bằng token của tài khoản đó trả 403 ACCOUNT_LOCKED. |
 | BUS-11 | **Xoá đầu sách:** không xoá được đầu sách còn phiếu PENDING/BORROWING/OVERDUE; đầu sách đã xoá không còn trong tìm kiếm và chi tiết (404); phiếu cũ giữ tên sách. |
 | BUS-12 | **Giảm số bản:** totalCopies mới ≥ số bản đang cho mượn (totalCopies cũ − availableCopies); availableCopies được tính lại tương ứng. |
-| BUS-13 | **Tự quản trị:** quản trị viên không được khoá hay đổi vai trò tài khoản của chính mình. |
+| BUS-13 | **Tự quản trị:** quản trị viên không được khoá tài khoản của chính mình. |
 
 *Bảng 4-1: Quy tắc nghiệp vụ*
 
@@ -842,7 +834,6 @@ Lỗi không lường trước: 500 INTERNAL_ERROR "Lỗi máy chủ. Vui lòng 
 | VAL-15 | Từ khoá tìm kiếm | 0–100 ký tự | Từ khoá tối đa 100 ký tự |
 | VAL-16 | Phân trang | page ≥ 1 (mặc định 1); size 1–50 (mặc định 10) | Tham số phân trang không hợp lệ |
 | VAL-20 | Lý do từ chối | 5–200 ký tự | Lý do từ chối từ 5 đến 200 ký tự |
-| VAL-21 | Khoảng thống kê | YYYY-MM-DD là ngày có thật; from ≤ to; cách nhau tối đa 366 ngày; mặc định 30 ngày gần nhất | Khoảng thời gian không hợp lệ |
 
 *Bảng 4-5: Quy tắc kiểm tra dữ liệu*
 

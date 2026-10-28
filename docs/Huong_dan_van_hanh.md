@@ -1,6 +1,6 @@
 # HƯỚNG DẪN VẬN HÀNH VÀ BÀN GIAO LIBRARYHUB
 
-**Phiên bản:** 2.0 · **Ngày:** 28/10/2026 · **Chủ hệ thống:** Mỵ Hiểu Minh – MSSV 23110198
+**Phiên bản:** 2.1 · **Ngày:** 28/10/2026 · **Chủ hệ thống:** Mỵ Hiểu Minh – MSSV 23110198
 
 Tài liệu hướng dẫn chạy LibraryHub trên máy cá nhân, tạo dữ liệu mẫu, kiểm tra kết nối và chuẩn bị thông tin để bàn giao hệ thống cho tester.
 
@@ -9,7 +9,7 @@ Tài liệu hướng dẫn chạy LibraryHub trên máy cá nhân, tạo dữ li
 - Backend: Node.js 20 trở lên, Express 5; khuyến nghị Node.js 22 để thống nhất với Dockerfile.
 - Database: PostgreSQL 16. Dự án chưa hỗ trợ MySQL; máy có MySQL có thể chạy thêm PostgreSQL hoặc dùng Docker.
 - Frontend: HTML/CSS/JavaScript được Express phục vụ cùng ứng dụng; không có bước build frontend riêng.
-- Tài liệu căn cứ: URD v2.0, SRS v2.0, Tài liệu API v2.0.
+- Tài liệu căn cứ: URD v2.1, SRS v2.1, Tài liệu API v2.1.
 
 ## 2. Chạy trực tiếp trên Windows
 
@@ -57,19 +57,14 @@ Mật khẩu chung của bộ seed: Test@123.
 
 | Vai trò | Email | Mục đích |
 |---|---|---|
-| Quản trị viên | admin01@library.test | Quản lý tài khoản, thống kê |
-| Quản trị viên dự phòng | admin02@library.test | Tài khoản quản trị thứ hai |
-| Thủ thư | librarian01@library.test, librarian02@library.test | Duyệt, trả sách, quản lý đầu sách |
+| Quản trị viên | admin01@library.test | Khoá / mở khoá tài khoản, xem thống kê |
+| Thủ thư | librarian01@library.test | Duyệt, trả sách, quản lý đầu sách |
 | Độc giả | reader01@library.test | Có phiếu ở đủ 5 trạng thái |
 | Độc giả | reader02@library.test | Có 5 phiếu hoạt động |
-| Độc giả | reader03@library.test | Có sách quá hạn |
-| Độc giả | reader04@library.test | Chưa có phiếu |
-| Độc giả | reader05@library.test | Có phiếu quá hạn lâu |
-| Độc giả | reader06@library.test | Giữ bản duy nhất của một đầu sách |
-| Độc giả | reader07@library.test đến reader12@library.test | Dữ liệu bổ sung |
+| Độc giả | reader03@library.test | Có sách quá hạn (một phiếu quá hạn lâu); giữ bản duy nhất của một đầu sách |
 | Độc giả bị khóa | locked01@library.test | Kiểm tra chặn đăng nhập |
 
-Seed tạo 17 tài khoản, 60 đầu sách và 113 phiếu. Ngày và mã phiếu được tạo tương đối theo ngày chạy; không dựa vào mã phiếu cố định trong ví dụ để chọn dữ liệu. Xác định phiếu theo email, tên sách và trạng thái.
+Seed tạo 6 tài khoản, 60 đầu sách và 45 phiếu. Ngày và mã phiếu được tạo tương đối theo ngày chạy; không dựa vào mã phiếu cố định trong ví dụ để chọn dữ liệu. Xác định phiếu theo email, tên sách và trạng thái.
 
 ## 5. Kiểm tra sau khi chạy
 
