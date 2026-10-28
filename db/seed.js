@@ -161,7 +161,7 @@ async function main() {
     // --- Phiếu mượn ---
     const counters = {};
     const loans = [];
-    const usedActive = new Set(); // userId:bookId của phiếu chưa kết thúc (BR-07)
+    const usedActive = new Set(); // userId:bookId của phiếu chưa kết thúc (BUS-07)
 
     function addLoan(user, book, status, { requested, approvedOffset = 1, returnOffset, renew = 0, reason }) {
       const key = requested.replace(/-/g, '');
@@ -213,13 +213,13 @@ async function main() {
     addLoan('reader01', B('Design Patterns'), 'RETURNED', { requested: ago(60), returnOffset: 10 });
     addLoan('reader01', B('Kiểm thử phần mềm'), 'RETURNED', { requested: ago(45), returnOffset: 19 });
     addLoan('reader01', B('Deep Learning'), 'REJECTED', { requested: ago(20), reason: 'Bản sách bị hỏng, đang chờ thay thế.' });
-    // reader02: đã giữ đủ 5 cuốn (BR-01)
+    // reader02: đã giữ đủ 5 cuốn (BUS-01)
     addLoan('reader02', B('Kinh tế học vi mô'), 'BORROWING', { requested: ago(3) });
     addLoan('reader02', B('Kinh tế học vĩ mô'), 'BORROWING', { requested: ago(3) });
     addLoan('reader02', B('Nguyên lý kế toán'), 'BORROWING', { requested: ago(8) });
     addLoan('reader02', B('Quản trị học'), 'PENDING', { requested: ago(1) });
     addLoan('reader02', B('Marketing căn bản'), 'PENDING', { requested: ago(0) });
-    // reader03: có sách quá hạn (BR-05)
+    // reader03: có sách quá hạn (BUS-05)
     addLoan('reader03', B('Lược sử thời gian'), 'OVERDUE', { requested: ago(25) });
     addLoan('reader03', B('Atomic Habits'), 'BORROWING', { requested: ago(4) });
     // reader04: tài khoản mới, chưa mượn

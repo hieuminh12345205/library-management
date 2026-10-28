@@ -34,7 +34,7 @@ router.get('/summary', async (req, res) => {
   });
 });
 
-// FR-12 – sách mượn nhiều (VR-21)
+// FR-12 – sách mượn nhiều (VAL-21)
 router.get('/top-books', async (req, res) => {
   const to = req.query.to || todayVN();
   const from = req.query.from || addDays(to, -29);

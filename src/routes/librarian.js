@@ -59,7 +59,7 @@ router.post('/loans/:id/approve', async (req, res) => {
   const loan = await db.transaction(async (client) => {
     const cur = await loadLoan(client, id, true);
     if (cur.status !== 'PENDING') throw conflict('INVALID_STATUS', 'Chỉ duyệt được phiếu đang chờ duyệt.');
-    // Giảm tồn kho nguyên tử – chỉ thành công khi còn bản (BR-06, BR-08)
+    // Giảm tồn kho nguyên tử – chỉ thành công khi còn bản (BUS-06, BUS-08)
     const dec = await client.query(
       'UPDATE books SET available_copies = available_copies - 1 WHERE id = $1 AND available_copies > 0 RETURNING id',
       [cur.book_id],

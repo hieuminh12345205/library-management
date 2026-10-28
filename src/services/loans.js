@@ -2,11 +2,11 @@ const { todayVN, diffDays, toIsoVN } = require('../utils/dates');
 
 const LOAN_STATUSES = ['PENDING', 'BORROWING', 'OVERDUE', 'RETURNED', 'REJECTED'];
 const ACTIVE_STATUSES = ['PENDING', 'BORROWING', 'OVERDUE'];
-const MAX_ACTIVE_LOANS = 5; // BR-01
-const LOAN_DAYS = 14; // BR-02
-const RENEW_DAYS = 7; // BR-03
-const FINE_PER_DAY = 2000; // BR-04
-const FINE_CAP = 100000; // BR-04
+const MAX_ACTIVE_LOANS = 5; // BUS-01
+const LOAN_DAYS = 14; // BUS-02
+const RENEW_DAYS = 7; // BUS-03
+const FINE_PER_DAY = 2000; // BUS-04
+const FINE_CAP = 100000; // BUS-04
 
 const LOAN_SELECT = `
   SELECT l.*, b.title AS book_title, b.isbn AS book_isbn, b.available_copies AS book_available,
@@ -15,14 +15,14 @@ const LOAN_SELECT = `
   JOIN books b ON b.id = l.book_id
   JOIN users u ON u.id = l.user_id`;
 
-// BR-09: chuyển phiếu quá hạn sang OVERDUE
+// BUS-09: chuyển phiếu quá hạn sang OVERDUE
 function refreshOverdue(client) {
   return client.query("UPDATE loans SET status = 'OVERDUE' WHERE status = 'BORROWING' AND due_date < $1", [
     todayVN(),
   ]);
 }
 
-// BR-04
+// BUS-04
 function computeFine(dueDate, returnDate) {
   const overdueDays = Math.max(0, diffDays(dueDate, returnDate));
   return { overdueDays, fine: Math.min(overdueDays * FINE_PER_DAY, FINE_CAP) };

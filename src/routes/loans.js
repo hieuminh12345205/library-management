@@ -25,7 +25,7 @@ router.post('/', async (req, res) => {
 
   const loan = await db.transaction(async (client) => {
     await L.refreshOverdue(client);
-    // Khoá theo độc giả để hai yêu cầu đồng thời không vượt BR-01
+    // Khoá theo độc giả để hai yêu cầu đồng thời không vượt BUS-01
     await client.query('SELECT id FROM users WHERE id = $1 FOR UPDATE', [req.user.id]);
 
     const bookRes = await client.query('SELECT * FROM books WHERE id = $1 AND deleted_at IS NULL', [bookId]);

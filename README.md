@@ -5,6 +5,18 @@ Bài tập lớn môn **Đánh giá hiệu năng hệ thống** – Trường Đ
 - Sinh viên: Mỵ Hiểu Minh – MSSV 23110198
 - Tài liệu: [URD](docs/URD.md) · [SRS](docs/SRS.md) · [Tài liệu API (Mẫu 01)](docs/Mau_01_Tai_lieu_API.docx)
 
+## Hồ sơ bàn giao
+
+Bộ tài liệu v2.0 cập nhật ngày 28/10/2026:
+
+- [URD bản Word](docs/URD.docx) và [SRS bản Word](docs/SRS.docx).
+- [Tài liệu API](docs/Mau_01_Tai_lieu_API.docx): 25 endpoint, request/response mẫu và tài khoản thử.
+- [Hướng dẫn vận hành](docs/Huong_dan_van_hanh.docx) · [Bản Markdown](docs/Huong_dan_van_hanh.md).
+- [Biên bản bàn giao số 1](docs/Mau_06_Bien_ban_ban_giao.docx).
+- [Trạng thái hồ sơ và thông tin cần bổ sung](docs/TRANG_THAI_HO_SO.md).
+
+Link deploy, cấu hình server thực tế, thông tin bạn cặp và ngày ký bàn giao sẽ được bổ sung khi xác nhận. Ngưỡng hiệu năng trong SRS là yêu cầu, chưa phải kết quả nghiệm thu.
+
 ## Công nghệ
 
 - Backend: Node.js 20+ · Express 5 · PostgreSQL 16

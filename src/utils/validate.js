@@ -59,7 +59,7 @@ function parseId(raw) {
   return Number(raw);
 }
 
-// VR-16
+// VAL-16
 function parsePaging(query) {
   const { page = '1', size = '10' } = query;
   if (!INT_RE.test(String(page)) || !INT_RE.test(String(size))) {

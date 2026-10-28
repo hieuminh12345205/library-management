@@ -31,7 +31,7 @@ function serializeBook(b, full = true) {
   return book;
 }
 
-// Kiểm tra dữ liệu đầu sách (VR-10 → VR-14). partial = true khi sửa.
+// Kiểm tra dữ liệu đầu sách (VAL-10 → VAL-14). partial = true khi sửa.
 function validateBook(body, partial) {
   const b = body || {};
   const has = (k) => b[k] !== undefined;
@@ -190,7 +190,7 @@ router.put('/:id', requireAuth('LIBRARIAN'), async (req, res) => {
   res.json({ data: serializeBook(book) });
 });
 
-// FR-10 – xoá (BR-11)
+// FR-10 – xoá (BUS-11)
 router.delete('/:id', requireAuth('LIBRARIAN'), async (req, res) => {
   const id = v.parseId(req.params.id);
   await db.transaction(async (client) => {
