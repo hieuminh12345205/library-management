@@ -1,7 +1,6 @@
 // Tạo dữ liệu mẫu. Dùng: npm run seed            (chỉ chạy khi DB trống)
 //                      npm run seed -- --force  (XOÁ toàn bộ dữ liệu rồi tạo lại)
-const fs = require('fs');
-const path = require('path');
+const { initializeSchema } = require('./initialize');
 const bcrypt = require('bcryptjs');
 const db = require('../src/db');
 const config = require('../src/config');
@@ -113,7 +112,7 @@ const at = (ymd, hour = 9, minute = 0) =>
 
 async function main() {
   const force = process.argv.includes('--force');
-  await db.query(fs.readFileSync(path.join(__dirname, 'schema.sql'), 'utf8'));
+  await initializeSchema();
 
   const existing = await db.query('SELECT count(*)::int AS n FROM users');
   if (existing.rows[0].n > 0 && !force) {
