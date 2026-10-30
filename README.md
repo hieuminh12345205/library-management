@@ -4,6 +4,7 @@ Bài tập lớn môn **Đánh giá hiệu năng hệ thống** – Trường Đ
 
 - Sinh viên: Mỵ Hiểu Minh – MSSV 23110198
 - Tài liệu: [URD](docs/URD.md) · [SRS](docs/SRS.md) · [Tài liệu API (Mẫu 01)](docs/Mau_01_Tai_lieu_API.docx)
+- **Link sản phẩm:** <https://sv24.bcse-vju.com> · Base URL API: `https://sv24.bcse-vju.com/api`
 
 ## Hồ sơ bàn giao
 
@@ -13,9 +14,8 @@ Bộ tài liệu v2.1 cập nhật ngày 28/10/2026:
 - [Tài liệu API](docs/Mau_01_Tai_lieu_API.docx): 22 endpoint, request/response mẫu và tài khoản thử.
 - [Hướng dẫn vận hành](docs/Huong_dan_van_hanh.docx) · [Bản Markdown](docs/Huong_dan_van_hanh.md).
 - [Biên bản bàn giao số 1](docs/Mau_06_Bien_ban_ban_giao.docx).
-- [Trạng thái hồ sơ và thông tin cần bổ sung](docs/TRANG_THAI_HO_SO.md).
 
-Link deploy, cấu hình server thực tế, thông tin bạn cặp và ngày ký bàn giao sẽ được bổ sung khi xác nhận. Ngưỡng hiệu năng trong SRS là yêu cầu, chưa phải kết quả nghiệm thu.
+Thông tin bạn cặp và ngày ký bàn giao sẽ được bổ sung khi hai bên xác nhận. Ngưỡng hiệu năng trong SRS là yêu cầu, chưa phải kết quả nghiệm thu.
 
 ## Công nghệ
 
@@ -44,6 +44,17 @@ Mở <http://localhost:3000>. Bảng dữ liệu được tạo tự động khi
 docker compose up -d --build
 docker compose exec app npm run seed
 ```
+
+## Môi trường triển khai
+
+| Hạng mục | Giá trị |
+|---|---|
+| Link sản phẩm | <https://sv24.bcse-vju.com> |
+| Server | VPS Ubuntu 24.04.5 LTS – 2 vCPU, 2 GB RAM, 20 GB SSD (lab BCSE – VJU) |
+| Thành phần | Nginx 1.24 → Docker: Node.js 22 (app) + PostgreSQL 16 (db); HTTPS qua Cloudflare |
+| Ngày triển khai | 30/10/2026 · commit `dba26a8` |
+
+Cách triển khai lại trên VPS xem [Hướng dẫn vận hành – mục 4](docs/Huong_dan_van_hanh.md#4-triển-khai-trên-vps).
 
 ## Tài khoản mẫu
 
@@ -76,6 +87,7 @@ Mật khẩu chung: `Test@123`
 
 ```
 db/        schema.sql, seed.js
+deploy/    cấu hình Nginx cho VPS
 docs/      URD, SRS, tài liệu API
 public/    giao diện (HTML/CSS/JS)
 src/       server Express: routes, middleware, services, utils
